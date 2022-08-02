@@ -1,0 +1,9 @@
+Basic wave shooter
+    Moving
+    Aiming
+    Firing
+    Reloading
+    Crouching
+    HUD
+    Interactable Doors
+    Basic AI
