@@ -5,8 +5,11 @@ Basic wave shooter
     Jumping
     Aiming
     Crouching
+    Basic AI
+    Building-aware AI
     HUD
     Interactable Doors
-    Basic AI
+    Interactable-aware AI
+    Enemy AI
     Slope/Step handling?
     Security Cameras
