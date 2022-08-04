@@ -8,18 +8,19 @@ public class PlayerController : MonoBehaviour
 {
 	public static PlayerController instance;
 
+	[Header("References")]
 	[SerializeField]
 	Weapon weapon;
 	[SerializeField]
 	Vector3 weaponHipPosition;
 	[SerializeField]
 	Vector3 weaponAimPosition;
+
+	[Header("Speed/Sensitivity")]
 	[SerializeField]
 	Vector2 mouseSensitivity = Vector2.one;
 	[SerializeField]
 	float moveSpeed = 2;
-	[SerializeField]
-	bool allowAirMovement = false;
 	[SerializeField]
 	float airSpeedMult = 0.25f;
 	[SerializeField]
@@ -29,8 +30,13 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	float jumpSpeed = 3;
 	[SerializeField]
-	float aimSpeed = 1;
+	float aimSpeed = 0.2f;
 
+	[Header("Options")]
+	[SerializeField]
+	bool allowAirMovement = false;
+
+	[Header("Debug")]
 	[SerializeField]
 	int fps = 144;
 
@@ -46,8 +52,11 @@ public class PlayerController : MonoBehaviour
 	bool isGrounded;
 	bool isSprinting = false;
 	bool isJumping = false;
+	[SerializeField]
 	bool isAiming = false;
 	float aimTimer = 0;
+	Vector3 weaponVelocity = Vector3.zero;
+	Vector3 cameraRotation = Vector3.zero;
 
 	private void OnValidate()
 	{
@@ -78,6 +87,8 @@ public class PlayerController : MonoBehaviour
 		cam = Camera.main;
 		uiManager = UIManager.instance;
 
+		cameraRotation = cam.transform.localRotation.eulerAngles;
+
 		Cursor.lockState = CursorLockMode.Locked;
 	}
 
@@ -105,7 +116,7 @@ public class PlayerController : MonoBehaviour
 	void GetInput()
 	{
 		mouseInput.x = Input.GetAxisRaw("Mouse X");
-		mouseInput.y = Input.GetAxisRaw("Mouse Y");
+		mouseInput.y = -Input.GetAxisRaw("Mouse Y");
 		mouseInput *= mouseSensitivity;
 
 
@@ -204,13 +215,29 @@ public class PlayerController : MonoBehaviour
 
 	void HandleRotation()
 	{
+		//cameraRotation.x += mouseInput.x;
+		cameraRotation.x += mouseInput.y;
+
 		transform.Rotate(0, mouseInput.x, 0);
-		cam.transform.Rotate(-mouseInput.y, 0, 0);
+
+		cameraRotation.x = Mathf.Clamp(cameraRotation.x, -90, 90);
+		//cam.transform.Rotate(-mouseInput.y, 0, 0);
+
+		Debug.Log(Quaternion.Euler(cameraRotation).eulerAngles);
+
+		cam.transform.localRotation = Quaternion.Euler(cameraRotation);
 	}
 
 	void HandleAiming()
 	{
-
+		if(isAiming)
+		{
+			weapon.transform.localPosition = Vector3.SmoothDamp(weapon.transform.localPosition, weaponAimPosition, ref weaponVelocity, aimSpeed);
+		}
+		else
+		{
+			weapon.transform.localPosition = Vector3.SmoothDamp(weapon.transform.localPosition, weaponHipPosition, ref weaponVelocity, aimSpeed);
+		}
 	}
 
 	void HandleRaycastTarget()
