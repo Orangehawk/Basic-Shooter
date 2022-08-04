@@ -13,8 +13,6 @@ public class UIManager : MonoBehaviour
 	GameObject pauseHud;
 
 	[SerializeField]
-	public UITextPanel playerHealthPanel;
-	[SerializeField]
 	public UITextPanel targetPanel;
 	[SerializeField]
 	public UITextPanel ammoPanel;

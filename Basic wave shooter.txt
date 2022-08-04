@@ -1,9 +1,12 @@
 Basic wave shooter
     Moving
-    Aiming
     Firing
     Reloading
+    Jumping
+    Aiming
     Crouching
     HUD
     Interactable Doors
     Basic AI
+    Slope/Step handling?
+    Security Cameras

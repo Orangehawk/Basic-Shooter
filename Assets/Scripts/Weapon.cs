@@ -8,8 +8,9 @@ public abstract class Weapon : MonoBehaviour
 	GameObject bulletPrefab;
 	[SerializeField]
 	Transform bulletSpawnPoint;
+
 	[SerializeField]
-	int fireRate = 60; //Bullets per second
+	int fireRate = 30; //Bullets per second
 	[SerializeField]
 	float muzzleVelocity = 20;
 	[SerializeField]

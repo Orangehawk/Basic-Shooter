@@ -30,7 +30,7 @@ public class Bullet : MonoBehaviour
 		if (!collision.collider.CompareTag("Projectile"))
 		{
 			HealthComponent hc;
-			if (collision.gameObject.TryGetComponent<HealthComponent>(out hc))
+			if (collision.gameObject.TryGetComponent(out hc))
 			{
 				hc.Damage(damage);
 			}

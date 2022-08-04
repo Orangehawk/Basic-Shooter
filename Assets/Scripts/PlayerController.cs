@@ -11,13 +11,28 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	Weapon weapon;
 	[SerializeField]
+	Vector3 weaponHipPosition;
+	[SerializeField]
+	Vector3 weaponAimPosition;
+	[SerializeField]
 	Vector2 mouseSensitivity = Vector2.one;
 	[SerializeField]
 	float moveSpeed = 2;
 	[SerializeField]
+	bool allowAirMovement = false;
+	[SerializeField]
+	float airSpeedMult = 0.25f;
+	[SerializeField]
 	float walkSpeed = 5;
 	[SerializeField]
 	float sprintSpeed = 8;
+	[SerializeField]
+	float jumpSpeed = 3;
+	[SerializeField]
+	float aimSpeed = 1;
+
+	[SerializeField]
+	int fps = 144;
 
 	Rigidbody rb;
 	HealthComponent healthComponent;
@@ -27,11 +42,21 @@ public class PlayerController : MonoBehaviour
 	UIManager uiManager;
 	GameObject target;
 
+	[SerializeField]
+	bool isGrounded;
 	bool isSprinting = false;
+	bool isJumping = false;
+	bool isAiming = false;
+	float aimTimer = 0;
+
+	private void OnValidate()
+	{
+		Application.targetFrameRate = fps;
+	}
 
 	void Awake()
 	{
-		if(instance != null && instance != this)
+		if (instance != null && instance != this)
 		{
 			Debug.LogWarning("Duplicate PlayerController!");
 			Destroy(gameObject);
@@ -40,6 +65,9 @@ public class PlayerController : MonoBehaviour
 		{
 			instance = this;
 		}
+
+		QualitySettings.vSyncCount = 0;  // VSync must be disabled
+		Application.targetFrameRate = fps;
 	}
 
 	// Start is called before the first frame update
@@ -51,6 +79,17 @@ public class PlayerController : MonoBehaviour
 		uiManager = UIManager.instance;
 
 		Cursor.lockState = CursorLockMode.Locked;
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		isGrounded = true;
+
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		isGrounded = false;
 	}
 
 	public HealthComponent GetHealthComponent()
@@ -65,8 +104,8 @@ public class PlayerController : MonoBehaviour
 
 	void GetInput()
 	{
-		mouseInput.x = Input.GetAxis("Mouse X");
-		mouseInput.y = Input.GetAxis("Mouse Y");
+		mouseInput.x = Input.GetAxisRaw("Mouse X");
+		mouseInput.y = Input.GetAxisRaw("Mouse Y");
 		mouseInput *= mouseSensitivity;
 
 
@@ -96,6 +135,21 @@ public class PlayerController : MonoBehaviour
 			playerInput.x = 0;
 		}
 
+		//Stops two inputs from doubling accelleration
+		//if(playerInput.x != 0 && playerInput.z != 0)
+		//{
+		//	playerInput *= 0.5f;
+		//}
+
+		if (Input.GetKey(KeyCode.Space))
+		{
+			isJumping = true;
+		}
+		else
+		{
+			isJumping = false;
+		}
+
 		if (Input.GetKey(KeyCode.LeftShift))
 		{
 			isSprinting = true;
@@ -114,13 +168,37 @@ public class PlayerController : MonoBehaviour
 		{
 			weapon.Fire();
 		}
+
+		if (Input.GetMouseButton(1))
+		{
+			isAiming = true;
+		}
+		else
+		{
+			isAiming = false;
+		}
 	}
 
 	void HandleMovement()
 	{
-		if ((!isSprinting && rb.velocity.magnitude < walkSpeed) || (isSprinting && rb.velocity.magnitude < sprintSpeed))
+		if (isGrounded)
 		{
-			rb.AddRelativeForce(playerInput);
+			if (isJumping)
+			{
+				rb.AddRelativeForce(0, jumpSpeed, 0, ForceMode.Impulse);
+			}
+
+			if ((!isSprinting && rb.velocity.magnitude < walkSpeed) || (isSprinting && rb.velocity.magnitude < sprintSpeed))
+			{
+				rb.AddRelativeForce(playerInput);
+			}
+		}
+		else
+		{
+			if (allowAirMovement && rb.velocity.magnitude < walkSpeed)
+			{
+				rb.AddRelativeForce(playerInput * airSpeedMult);
+			}
 		}
 	}
 
@@ -130,17 +208,23 @@ public class PlayerController : MonoBehaviour
 		cam.transform.Rotate(-mouseInput.y, 0, 0);
 	}
 
+	void HandleAiming()
+	{
+
+	}
+
 	void HandleRaycastTarget()
 	{
+		target = null;
 		int layerMask = 1 << 8;
 		layerMask = ~layerMask;
 		RaycastHit hit;
-		if(Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, 100f, layerMask))
+		if (Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, 100f, layerMask))
 		{
 			target = hit.collider.gameObject;
 
 			HealthComponent temp;
-			if(hit.collider.gameObject.TryGetComponent(out temp))
+			if (hit.collider.gameObject.TryGetComponent(out temp))
 			{
 				Debug.DrawRay(cam.transform.position, cam.transform.TransformDirection(Vector3.forward) * hit.distance, Color.red);
 			}
@@ -161,18 +245,32 @@ public class PlayerController : MonoBehaviour
 		uiManager.SetAmmoText(weapon.GetCurrentAmmo(), weapon.GetTotalAmmo());
 
 		HealthComponent h;
-		if(target.TryGetComponent(out h))
+		if (target && target.TryGetComponent(out h))
 		{
 			uiManager.SetTargetPanelText($"Target Health: {h.GetHealthPercent()}");
 		}
+		else
+		{
+			uiManager.SetTargetPanelText("");
+		}
+	}
+
+	void FixedUpdate()
+	{
+		HandleRotation();
+		HandleMovement();
+	}
+
+	void LateUpdate()
+	{
+		
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
 		GetInput();
-		HandleRotation();
-		HandleMovement();
+		HandleAiming();
 		HandleRaycastTarget();
 		UpdateUI();
 	}
