@@ -16,6 +16,10 @@ namespace Pathfinding
 			Escaping
 		}
 
+		[Header("References")]
+		[SerializeField]
+		Weapon weapon;
+
 		[Header("Options")]
 		[SerializeField]
 		State defaultState = State.Idle;
@@ -37,6 +41,8 @@ namespace Pathfinding
 		float idleRotateChance = 40;
 		[SerializeField]
 		float idleMaxRotateAmount = 40;
+		[SerializeField]
+		float idleMinRotateAmount = 20;
 
 		[Header("Aware State")]
 		[SerializeField]
@@ -47,23 +53,33 @@ namespace Pathfinding
 		float awareRotateChance = 80;
 		[SerializeField]
 		float awareMaxRotateAmount = 40;
+		[SerializeField]
+		float awareMinRotateAmount = 20;
 
 		[Header("Patrol State")]
 		[SerializeField]
-		Vector3 maxDistance = new Vector3(10, 0, 10);
+		Vector3 maxPatrolDistance = new Vector3(10, 0, 10);
 		[SerializeField]
-		Transform patrolTarget;
+		Transform moveTarget;
 		[SerializeField]
 		float timeReachedEndOfPath = 0;
 		[SerializeField]
-		float waitAtEndOfPathTime = 5;
+		float patrolWaitAtEndOfPathTime = 5;
 		[SerializeField]
 		bool atEndOfPathLastFrame = false; //True if at the end of the path in the last frame
 
 		[Header("Searching State")]
-		float maxSearchTime = 10;
+		[SerializeField]
+		float maxSearchTime = 20;
+		[SerializeField]
+		Vector3 maxSearchDistance = new Vector3(10, 0, 10);
+		[SerializeField]
+		float searchWaitAtEndOfPathTime = 2;
 
 		[Header("Fighting State")]
+		[SerializeField]
+		float angleToStartShooting = 5;
+
 		[Header("Escaping State")]
 
 		[Header("Debug")]
@@ -91,7 +107,7 @@ namespace Pathfinding
 		{
 			controller = GetComponent<CharacterController>();
 
-			patrolTarget = new GameObject("Patrol target").transform;
+			moveTarget = new GameObject("Move target").transform;
 
 			SetState(defaultState);
 		}
@@ -142,19 +158,44 @@ namespace Pathfinding
 		void SawTarget(Transform target)
 		{
 			SetTarget(target);
-			SetState(State.Fighting);
+			if (weapon)
+			{
+				SetState(State.Fighting);
+			}
+			else
+			{
+				SetState(State.Escaping);
+			}
 			aiPath.slowdownDistance = chaseSlowdownDistance;
 			aiPath.endReachedDistance = chaseEndReachedDistance;
-			//Need to work out how to enable rotation after stopping
 		}
 
 		void LostTarget()
 		{
 			lastTargetLocation = GetTarget().position;
 			SetTarget(null);
-			SetState(State.Searching);
+			if (GetState() == State.Fighting)
+			{
+				SetState(State.Searching);
+			}
 			aiPath.slowdownDistance = defaultSlowdownDistance;
 			aiPath.endReachedDistance = defaultEndReachedDistance;
+		}
+
+		float GetRandomClampedRange(float lowMin, float lowMax, float highMin, float highMax)
+		{
+			float amount;
+
+			if(Random.Range(-1f, 1f) < 0)
+			{
+				amount = Random.Range(lowMin, lowMax);
+			}
+			else
+			{
+				amount = Random.Range(highMin, highMax);
+			}
+
+			return amount;
 		}
 
 		void IdleState()
@@ -165,7 +206,7 @@ namespace Pathfinding
 
 				if (randomNum < idleRotateChance)
 				{
-					rotateAmount = Random.Range(-idleMaxRotateAmount, idleMaxRotateAmount);
+					rotateAmount = GetRandomClampedRange(-idleMaxRotateAmount, -idleMinRotateAmount, idleMinRotateAmount, idleMaxRotateAmount);
 					rotationTimer = 0;
 					targetRotation = transform.rotation.eulerAngles + new Vector3(0, rotateAmount, 0);
 				}
@@ -193,7 +234,8 @@ namespace Pathfinding
 
 				if (randomNum < awareRotateChance)
 				{
-					rotateAmount = Random.Range(-awareMaxRotateAmount, awareMaxRotateAmount);
+					//rotateAmount = Random.Range(-awareMaxRotateAmount, awareMaxRotateAmount);
+					rotateAmount = GetRandomClampedRange(-awareMaxRotateAmount, -awareMinRotateAmount, awareMinRotateAmount, awareMaxRotateAmount);
 					rotationTimer = 0;
 					targetRotation = transform.rotation.eulerAngles + new Vector3(0, rotateAmount, 0);
 				}
@@ -208,7 +250,7 @@ namespace Pathfinding
 			}
 		}
 
-		void GetNewPatrolTarget()
+		void GetNewMoveTarget(Vector3 centre, Vector3 maxDistance)
 		{
 			bool successfullyFound = false;
 
@@ -216,14 +258,14 @@ namespace Pathfinding
 			Vector3 newPos = Vector3.zero;
 			while (!successfullyFound)
 			{
-				newPos = new Vector3(Random.Range(-maxDistance.x, maxDistance.x), Random.Range(-maxDistance.y, maxDistance.y), Random.Range(-maxDistance.z, maxDistance.z));
+				newPos = centre + new Vector3(Random.Range(-maxDistance.x, maxDistance.x), Random.Range(-maxDistance.y, maxDistance.y), Random.Range(-maxDistance.z, maxDistance.z));
 				if (!Physics.CheckBox(newPos, Vector3.one / 2f, Quaternion.identity, layermask))
 				{
 					successfullyFound = true;
 				}
 			}
 
-			patrolTarget.position = newPos;
+			moveTarget.position = newPos;
 		}
 
 		void PatrollingState()
@@ -241,10 +283,10 @@ namespace Pathfinding
 				}
 			}
 
-			if (!stateInitialised || (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath) && Time.time >= timeReachedEndOfPath + waitAtEndOfPathTime))
+			if (!stateInitialised || (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath) && Time.time >= timeReachedEndOfPath + patrolWaitAtEndOfPathTime))
 			{
-				GetNewPatrolTarget();
-				SetTarget(patrolTarget);
+				GetNewMoveTarget(transform.position, maxPatrolDistance);
+				SetTarget(moveTarget);
 				UpdateDestination();
 				ai.SearchPath();
 				atEndOfPathLastFrame = false;
@@ -258,6 +300,28 @@ namespace Pathfinding
 			{
 				SetState(State.Aware);
 			}
+
+			if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
+			{
+				if (atEndOfPathLastFrame)
+				{
+					generalStateTimer += Time.deltaTime; //Time since reached end of path
+				}
+				else
+				{
+					timeReachedEndOfPath = Time.time;
+					atEndOfPathLastFrame = true;
+				}
+			}
+
+			if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath) && Time.time >= timeReachedEndOfPath + searchWaitAtEndOfPathTime)
+			{
+				GetNewMoveTarget(lastTargetLocation, maxSearchDistance);
+				SetTarget(moveTarget);
+				UpdateDestination();
+				ai.SearchPath();
+				atEndOfPathLastFrame = false;
+			}
 		}
 
 		void FightingState()
@@ -270,15 +334,40 @@ namespace Pathfinding
 				float singleStep = rotateSpeed * Time.deltaTime;
 
 				Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
-				Debug.Log(newDirection);
 
 				Debug.DrawRay(transform.position, newDirection, Color.red);
 
 				transform.rotation = Quaternion.LookRotation(newDirection);
+
+				if(Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting)
+				{
+					if (weapon.GetTotalAmmo() > 0)
+					{
+						if (weapon.GetCurrentAmmo() > 0)
+						{
+							Debug.Log($"{gameObject.name} is firing");
+							weapon.Fire();
+						}
+						else
+						{
+							Debug.Log($"{gameObject.name} is reloading");
+							weapon.Reload();
+						}
+					}
+					else
+					{
+						Debug.Log($"{gameObject.name} has no ammo!");
+					}
+				}
 			}
 		}
 
 		void EscapingState()
+		{
+
+		}
+
+		void DeadState()
 		{
 
 		}

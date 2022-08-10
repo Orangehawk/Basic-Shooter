@@ -25,6 +25,10 @@ public class HealthDisplay : MonoBehaviour
         if (healthComponent)
         {
             textPanel.SetText($"{prefix}: {healthComponent.GetHealthPercent()}%");
+            if(healthComponent.IsDead())
+			{
+                textPanel.SetBackgroundColor(Color.red);
+			}
 		}
     }
 }

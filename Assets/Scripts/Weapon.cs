@@ -60,7 +60,10 @@ public abstract class Weapon : MonoBehaviour
 
 	public void Reload()
 	{
-		StartCoroutine(ReloadCoroutine());
+		if (!isReloading && currentAmmo < magazineSize)
+		{
+			StartCoroutine(ReloadCoroutine());
+		}
 	}
 
 	IEnumerator ReloadCoroutine()

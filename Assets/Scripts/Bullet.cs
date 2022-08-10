@@ -11,8 +11,11 @@ public class Bullet : MonoBehaviour
 	float lifeTime = 5f;
 	[SerializeField]
 	float damage = 1;
+	[SerializeField]
+	bool enableTrail = false;
 
 	Rigidbody rb;
+	TrailMaker trailMaker;
 
 	float expireTime;
 
@@ -23,12 +26,22 @@ public class Bullet : MonoBehaviour
 		rb.AddRelativeForce(0, 0, InitialVelocity, ForceMode.VelocityChange);
 
 		expireTime = Time.time + lifeTime;
+
+		if(enableTrail)
+		{
+			GameObject go = new GameObject("Trail");
+			go.transform.parent = transform;
+			go.transform.localPosition = Vector3.zero;
+			trailMaker = go.AddComponent<TrailMaker>();
+		}
 	}
 
 	private void OnCollisionEnter(Collision collision)
 	{
 		if (!collision.collider.CompareTag("Projectile"))
 		{
+			Debug.Log($"Hit {collision.gameObject.name}");
+
 			HealthComponent hc;
 			if (collision.gameObject.TryGetComponent(out hc))
 			{
@@ -37,6 +50,10 @@ public class Bullet : MonoBehaviour
 
 			Destroy(gameObject);
 		}
+		else
+		{
+			Debug.Log($"Hit {collision.gameObject.name}");
+		}
 	}
 
 	// Update is called once per frame
@@ -44,7 +61,13 @@ public class Bullet : MonoBehaviour
 	{
 		if (Time.time > expireTime)
 		{
+			Debug.Log($"Bullet expired");
 			Destroy(gameObject);
 		}
+	}
+
+	void OnDestroy()
+	{
+		trailMaker.gameObject.transform.parent = null;
 	}
 }
