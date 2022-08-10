@@ -37,14 +37,13 @@ public class PlayerController : MonoBehaviour
 	bool allowAirMovement = false;
 
 	[Header("Debug")]
-	[SerializeField]
-	int fps = 144;
 
 	Rigidbody rb;
 	HealthComponent healthComponent;
 	Vector2 mouseInput = Vector2.zero;
 	Vector3 playerInput = Vector3.zero;
 	Camera cam;
+	GameManager gameManager;
 	UIManager uiManager;
 	GameObject target;
 
@@ -58,11 +57,6 @@ public class PlayerController : MonoBehaviour
 	Vector3 weaponVelocity = Vector3.zero;
 	Vector3 cameraRotation = Vector3.zero;
 
-	private void OnValidate()
-	{
-		Application.targetFrameRate = fps;
-	}
-
 	void Awake()
 	{
 		if (instance != null && instance != this)
@@ -74,9 +68,6 @@ public class PlayerController : MonoBehaviour
 		{
 			instance = this;
 		}
-
-		QualitySettings.vSyncCount = 0;  // VSync must be disabled
-		Application.targetFrameRate = fps;
 	}
 
 	// Start is called before the first frame update
@@ -85,11 +76,10 @@ public class PlayerController : MonoBehaviour
 		rb = GetComponent<Rigidbody>();
 		healthComponent = GetComponent<HealthComponent>();
 		cam = Camera.main;
+		gameManager = GameManager.instance;
 		uiManager = UIManager.instance;
 
 		cameraRotation = cam.transform.localRotation.eulerAngles;
-
-		Cursor.lockState = CursorLockMode.Locked;
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -120,78 +110,87 @@ public class PlayerController : MonoBehaviour
 
 	void GetInput()
 	{
-		mouseInput.x = Input.GetAxisRaw("Mouse X");
-		mouseInput.y = -Input.GetAxisRaw("Mouse Y");
-		mouseInput *= mouseSensitivity;
-
-
-		if (Input.GetKey(KeyCode.W))
+		if (Input.GetKeyDown(KeyCode.P))
 		{
-			playerInput.z = moveSpeed;
-		}
-		else if (Input.GetKey(KeyCode.S))
-		{
-			playerInput.z = -moveSpeed;
-		}
-		else
-		{
-			playerInput.z = 0;
+			gameManager.TogglePausePlay();
 		}
 
-		if (Input.GetKey(KeyCode.D))
-		{
-			playerInput.x = moveSpeed;
-		}
-		else if (Input.GetKey(KeyCode.A))
-		{
-			playerInput.x = -moveSpeed;
-		}
-		else
-		{
-			playerInput.x = 0;
-		}
 
-		//Stops two inputs from doubling accelleration
-		//if(playerInput.x != 0 && playerInput.z != 0)
-		//{
-		//	playerInput *= 0.5f;
-		//}
+		if (gameManager.GetState() == GameManager.State.Playing)
+		{
+			mouseInput.x = Input.GetAxisRaw("Mouse X");
+			mouseInput.y = -Input.GetAxisRaw("Mouse Y");
+			mouseInput *= mouseSensitivity;
 
-		if (Input.GetKey(KeyCode.Space))
-		{
-			isJumping = true;
-		}
-		else
-		{
-			isJumping = false;
-		}
 
-		if (Input.GetKey(KeyCode.LeftShift))
-		{
-			isSprinting = true;
-		}
-		else
-		{
-			isSprinting = false;
-		}
+			if (Input.GetKey(KeyCode.W))
+			{
+				playerInput.z = moveSpeed;
+			}
+			else if (Input.GetKey(KeyCode.S))
+			{
+				playerInput.z = -moveSpeed;
+			}
+			else
+			{
+				playerInput.z = 0;
+			}
 
-		if (Input.GetKeyDown(KeyCode.R))
-		{
-			weapon.Reload();
-		}
+			if (Input.GetKey(KeyCode.D))
+			{
+				playerInput.x = moveSpeed;
+			}
+			else if (Input.GetKey(KeyCode.A))
+			{
+				playerInput.x = -moveSpeed;
+			}
+			else
+			{
+				playerInput.x = 0;
+			}
 
-		if (Input.GetMouseButton(0))
-		{
-			weapon.Fire();
-		}
+			//Stops two inputs from doubling accelleration
+			//if(playerInput.x != 0 && playerInput.z != 0)
+			//{
+			//	playerInput *= 0.5f;
+			//}
 
-		if (Input.GetMouseButton(1))
-		{
-			isAiming = true;
-		}
-		else
-		{
-			isAiming = false;
+			if (Input.GetKey(KeyCode.Space))
+			{
+				isJumping = true;
+			}
+			else
+			{
+				isJumping = false;
+			}
+
+			if (Input.GetKey(KeyCode.LeftShift))
+			{
+				isSprinting = true;
+			}
+			else
+			{
+				isSprinting = false;
+			}
+
+			if (Input.GetKeyDown(KeyCode.R))
+			{
+				weapon.Reload();
+			}
+
+			if (Input.GetMouseButton(0))
+			{
+				weapon.Fire();
+			}
+
+			if (Input.GetMouseButton(1))
+			{
+				isAiming = true;
+			}
+			else
+			{
+				isAiming = false;
+			}
 		}
 	}
 
@@ -220,13 +219,11 @@ public class PlayerController : MonoBehaviour
 
 	void HandleRotation()
 	{
-		//cameraRotation.x += mouseInput.x;
 		cameraRotation.x += mouseInput.y;
 
 		transform.Rotate(0, mouseInput.x, 0);
 
 		cameraRotation.x = Mathf.Clamp(cameraRotation.x, -90, 90);
-		//cam.transform.Rotate(-mouseInput.y, 0, 0);
 
 		cam.transform.localRotation = Quaternion.Euler(cameraRotation);
 	}

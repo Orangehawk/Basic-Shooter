@@ -8,21 +8,14 @@ public class UIManager : MonoBehaviour
 	public static UIManager instance;
 
 	[SerializeField]
-	GameObject normalHud;
+	GameObject playingHud;
 	[SerializeField]
-	GameObject pauseHud;
+	GameObject pausedHud;
 
 	[SerializeField]
 	public UITextPanel targetPanel;
 	[SerializeField]
 	public UITextPanel ammoPanel;
-
-	//[SerializeField]
-	//PlayerController player;
-	//[SerializeField]
-	//HealthComponent playerHealth;
-	//[SerializeField]
-	//HealthComponent targetHealth;
 
 	// Start is called before the first frame update
 	void Awake()
@@ -30,7 +23,7 @@ public class UIManager : MonoBehaviour
 		if (instance != null && instance != this)
 		{
 			Debug.LogWarning("Duplicate UIManager!");
-			Destroy(gameObject);
+			Destroy(this);
 		}
 		else
 		{
@@ -40,12 +33,25 @@ public class UIManager : MonoBehaviour
 
 	void Start()
 	{
-		//player = PlayerController.instance;
 
-		//if(player)
-		//{
-		//	playerHealth = player.GetHealthComponent();
-		//}
+	}
+
+	public void SetHudLayer(string layer)
+	{
+		switch(layer)
+		{
+			case "Playing":
+				playingHud.SetActive(true);
+				pausedHud.SetActive(false);
+				break;
+			case "Paused":
+				playingHud.SetActive(false);
+				pausedHud.SetActive(true);
+				break;
+			default:
+				Debug.LogWarning($"Invalid hud layer \"{layer}\"");
+				break;
+		}
 	}
 
 	public void SetTargetPanelText(string text)
@@ -70,39 +76,6 @@ public class UIManager : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		//if (targetHealth)
-		//{
-		//	targetHealthPanel.SetActive(true);
 
-		//	if (!targetHealth.IsDead())
-		//	{
-		//		targetHealthPanel.SetText($"Target Health: {targetHealth.GetHealth()} ({targetHealth.GetHealthPercent()}%)");
-		//	}
-		//	else
-		//	{
-		//		targetHealthPanel.SetText($"Target Health: DEAD");
-		//	}
-		//}
-		//else
-		//{
-		//	targetHealthPanel.SetActive(false);
-		//}
-
-		//if (player)
-		//{
-		//	if (!playerHealth.IsDead())
-		//	{
-		//		playerHealthPanel.SetText($"Health: {playerHealth.GetHealth()} ({playerHealth.GetHealthPercent()}%)");
-		//	}
-		//	else
-		//	{
-		//		playerHealthPanel.SetText($"Health: DEAD");
-		//	}
-
-		//	float ammo = player.GetCurrentWeapon().GetCurrentAmmo();
-		//	float totalAmmo = player.GetCurrentWeapon().GetTotalAmmo();
-
-		//	ammoPanel.SetText($"Ammo: {ammo}/{totalAmmo}");
-		//}
 	}
 }
