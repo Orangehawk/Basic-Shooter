@@ -94,13 +94,18 @@ public class PlayerController : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		isGrounded = true;
-
+		if(other.CompareTag("Ground"))
+		{
+			isGrounded = true;
+		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
-		isGrounded = false;
+		if (other.CompareTag("Ground"))
+		{
+			isGrounded = false;
+		}
 	}
 
 	public HealthComponent GetHealthComponent()
@@ -223,8 +228,6 @@ public class PlayerController : MonoBehaviour
 		cameraRotation.x = Mathf.Clamp(cameraRotation.x, -90, 90);
 		//cam.transform.Rotate(-mouseInput.y, 0, 0);
 
-		Debug.Log(Quaternion.Euler(cameraRotation).eulerAngles);
-
 		cam.transform.localRotation = Quaternion.Euler(cameraRotation);
 	}
 
@@ -246,7 +249,7 @@ public class PlayerController : MonoBehaviour
 		int layerMask = 1 << 8;
 		layerMask = ~layerMask;
 		RaycastHit hit;
-		if (Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, 100f, layerMask))
+		if (Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, 100f, layerMask, QueryTriggerInteraction.Ignore))
 		{
 			target = hit.collider.gameObject;
 
