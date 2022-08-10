@@ -37,7 +37,6 @@ public class PlayerController : MonoBehaviour
 	bool allowAirMovement = false;
 
 	[Header("Debug")]
-
 	Rigidbody rb;
 	HealthComponent healthComponent;
 	Vector2 mouseInput = Vector2.zero;
@@ -47,6 +46,8 @@ public class PlayerController : MonoBehaviour
 	UIManager uiManager;
 	GameObject target;
 
+	[SerializeField]
+	bool useFixedUpdate = false;
 	[SerializeField]
 	bool isGrounded;
 	bool isSprinting = false;
@@ -122,6 +123,11 @@ public class PlayerController : MonoBehaviour
 			mouseInput.y = -Input.GetAxisRaw("Mouse Y");
 			mouseInput *= mouseSensitivity;
 
+
+			if(Input.GetKeyDown(KeyCode.M))
+			{
+				useFixedUpdate = !useFixedUpdate;
+			}
 
 			if (Input.GetKey(KeyCode.W))
 			{
@@ -284,8 +290,11 @@ public class PlayerController : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		HandleRotation();
-		HandleMovement();
+		if (useFixedUpdate)
+		{
+			HandleRotation();
+			HandleMovement();
+		}
 	}
 
 	void LateUpdate()
@@ -297,8 +306,17 @@ public class PlayerController : MonoBehaviour
 	void Update()
 	{
 		GetInput();
-		HandleAiming();
-		HandleRaycastTarget();
-		UpdateUI();
+
+		if (gameManager.GetState() == GameManager.State.Playing)
+		{
+			if(!useFixedUpdate)
+			{
+				HandleRotation();
+				HandleMovement();
+			}
+			HandleAiming();
+			HandleRaycastTarget();
+			UpdateUI();
+		}
 	}
 }
