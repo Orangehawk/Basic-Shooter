@@ -20,7 +20,9 @@ public class GameManager : MonoBehaviour
 
 	[Header("Debug")]
 	[SerializeField]
-	int fps = 144;
+	int vsyncCount = 0;
+	[SerializeField]
+	int targetFps = 144;
 
 	[SerializeField]
 	UIManager uiManager;
@@ -43,7 +45,8 @@ public class GameManager : MonoBehaviour
 
 	private void OnValidate()
 	{
-		Application.targetFrameRate = fps;
+		QualitySettings.vSyncCount = vsyncCount;  // VSync must be disabled
+		Application.targetFrameRate = targetFps;
 	}
 
 	// Start is called before the first frame update
@@ -53,8 +56,8 @@ public class GameManager : MonoBehaviour
 
 		SetState(initialState);
 
-		QualitySettings.vSyncCount = 0;  // VSync must be disabled
-		Application.targetFrameRate = fps;
+		QualitySettings.vSyncCount = vsyncCount;  // VSync must be disabled
+		Application.targetFrameRate = targetFps;
 	}
 
 	public void TogglePausePlay()
