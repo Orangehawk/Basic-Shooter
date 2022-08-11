@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(HealthComponent))]
-public class PlayerController : MonoBehaviour
+public class PlayerControllerCC : MonoBehaviour
 {
-	public static PlayerController instance;
+	public static PlayerControllerCC instance;
 
 	[Header("References")]
 	[SerializeField]
@@ -140,7 +139,7 @@ public class PlayerController : MonoBehaviour
 			}
 
 
-			if (Input.GetKeyDown(KeyCode.Q))
+			if(Input.GetKeyDown(KeyCode.Q))
 			{
 				useFixedUpdateCamera = !useFixedUpdateCamera;
 			}
@@ -152,11 +151,11 @@ public class PlayerController : MonoBehaviour
 
 			if (Input.GetKey(KeyCode.W))
 			{
-				playerInput.z = 1;
+				playerInput.z = moveSpeed;
 			}
 			else if (Input.GetKey(KeyCode.S))
 			{
-				playerInput.z = -1;
+				playerInput.z = -moveSpeed;
 			}
 			else
 			{
@@ -165,11 +164,11 @@ public class PlayerController : MonoBehaviour
 
 			if (Input.GetKey(KeyCode.D))
 			{
-				playerInput.x = 1;
+				playerInput.x = moveSpeed;
 			}
 			else if (Input.GetKey(KeyCode.A))
 			{
-				playerInput.x = -1;
+				playerInput.x = -moveSpeed;
 			}
 			else
 			{
@@ -223,23 +222,24 @@ public class PlayerController : MonoBehaviour
 
 	bool IsGrounded()
 	{
-		//var a = Physics.CheckBox(transform.position + new Vector3(0, -1, 0), new Vector3(0.4f, 0.025f, 0.4f), Quaternion.identity, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
+		var a = Physics.CheckBox(transform.position + new Vector3(0, -1, 0), new Vector3(0.4f, 0.025f, 0.4f), Quaternion.identity, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
+		
+		if (a)
+		{
+			//Debug.Log("True");
+			return true;
+		}
 
-		//if (a)
-		//{
-		//	//Debug.Log("True");
-		//	return true;
-		//}
+		//Debug.Log("False");
+		return false;
 
-		////Debug.Log("False");
-		//return false;
-
-		return Physics.CheckBox(transform.position + new Vector3(0, -1, 0), new Vector3(0.4f, 0.025f, 0.4f), Quaternion.identity, ~LayerMask.GetMask("Player", "Ignore Raycast"), QueryTriggerInteraction.Ignore);
+		//return Physics.CheckBox(transform.position + new Vector3(0, -1, 0), new Vector3(0.4f, 0.025f, 0.4f), Quaternion.identity, ~LayerMask.GetMask("Player", "Ignore Raycast"), QueryTriggerInteraction.Ignore);
 	}
-
+	
 	void HandleMovement()
 	{
 		Vector3 direction = ((transform.forward * playerInput.z) + (transform.right * playerInput.x)).normalized;
+		Vector3 move = direction * moveSpeed;
 		//isGrounded = characterController.isGrounded;
 
 		if (IsGrounded())
@@ -250,28 +250,25 @@ public class PlayerController : MonoBehaviour
 			}
 
 			//if ((!isSprinting && characterController.velocity.magnitude < walkSpeed) || (isSprinting && characterController.velocity.magnitude < sprintSpeed))
-			if (!isSprinting)
+			if(!isSprinting)
 			{
-				characterController.Move(direction * moveSpeed * Time.deltaTime);
+				characterController.Move(move * Time.deltaTime);
 				//characterController.AddRelativeForce(playerInput);
-			}
-			else
-			{
-				characterController.Move(direction * sprintSpeed * Time.deltaTime);
 			}
 
 			if (isJumping)
 			{
 				playerVelocity.y += Mathf.Sqrt(jumpSpeed * -3.0f * -Physics.gravity.magnitude);
+				//characterController.
 				//characterController.AddRelativeForce(0, jumpSpeed, 0, ForceMode.Impulse);
 			}
 		}
 		else
 		{
 			//Debug.Log("Not grounded");
-			if (allowAirMovement)
+			if (allowAirMovement && characterController.velocity.magnitude < walkSpeed)
 			{
-				characterController.Move(direction * moveSpeed * airSpeedMult * Time.deltaTime);
+				characterController.Move(move);
 				//characterController.AddRelativeForce(playerInput * airSpeedMult);
 			}
 		}
@@ -299,7 +296,7 @@ public class PlayerController : MonoBehaviour
 
 	void HandleAiming()
 	{
-		if (isAiming)
+		if(isAiming)
 		{
 			weapon.transform.localPosition = Vector3.SmoothDamp(weapon.transform.localPosition, weaponAimPosition, ref weaponVelocity, aimSpeed);
 		}
@@ -366,7 +363,7 @@ public class PlayerController : MonoBehaviour
 
 	void LateUpdate()
 	{
-
+		
 	}
 
 	// Update is called once per frame
@@ -382,7 +379,7 @@ public class PlayerController : MonoBehaviour
 			}
 
 			if (!useFixedUpdateMovement)
-			{
+			{ 
 				HandleMovement();
 			}
 			HandleAiming();

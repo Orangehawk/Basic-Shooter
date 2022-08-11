@@ -345,18 +345,18 @@ namespace Pathfinding
 					{
 						if (weapon.GetCurrentAmmo() > 0)
 						{
-							Debug.Log($"{gameObject.name} is firing");
+							//Debug.Log($"{gameObject.name} is firing");
 							weapon.Fire();
 						}
 						else
 						{
-							Debug.Log($"{gameObject.name} is reloading");
+							//Debug.Log($"{gameObject.name} is reloading");
 							weapon.Reload();
 						}
 					}
 					else
 					{
-						Debug.Log($"{gameObject.name} has no ammo!");
+						//Debug.Log($"{gameObject.name} has no ammo!");
 					}
 				}
 			}

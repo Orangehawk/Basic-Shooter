@@ -52,7 +52,7 @@ public class Bullet : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log($"Hit {collision.gameObject.name}");
+			Debug.Log($"Hit {collision.gameObject.name} - no HC");
 		}
 	}
 

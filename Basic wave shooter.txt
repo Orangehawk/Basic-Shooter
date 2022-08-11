@@ -9,6 +9,9 @@ Basic wave shooter
     Enemy AI
     HUD
 
+Bugs
+    Camera movement at higher than 60 fps
+
 Bonus
     Slope/Step handling
     Interactable Doors
