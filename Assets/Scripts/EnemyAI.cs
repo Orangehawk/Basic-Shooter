@@ -11,6 +11,7 @@ namespace Pathfinding
 			Idle,
 			Aware,
 			Patrolling,
+			Hit,
 			Searching,
 			Fighting,
 			Escaping
@@ -67,6 +68,8 @@ namespace Pathfinding
 		float patrolWaitAtEndOfPathTime = 5;
 		[SerializeField]
 		bool atEndOfPathLastFrame = false; //True if at the end of the path in the last frame
+
+		[Header("Hit State")]
 
 		[Header("Searching State")]
 		[SerializeField]
@@ -130,7 +133,7 @@ namespace Pathfinding
 
 		void HandleState()
 		{
-			switch (currentState)
+			switch (GetState())
 			{
 				case State.Idle:
 					IdleState();
@@ -140,6 +143,9 @@ namespace Pathfinding
 					break;
 				case State.Patrolling:
 					PatrollingState();
+					break;
+				case State.Hit:
+					HitState();
 					break;
 				case State.Searching:
 					SearchingState();
@@ -155,19 +161,35 @@ namespace Pathfinding
 			}
 		}
 
+		bool WeaponReady()
+		{
+			if(weapon && weapon.GetTotalAmmo() > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 		void SawTarget(Transform target)
 		{
 			SetTarget(target);
-			if (weapon)
+			if (WeaponReady())
 			{
 				SetState(State.Fighting);
+				aiPath.enableRotation = false;
+				aiPath.slowdownDistance = chaseSlowdownDistance;
+				aiPath.endReachedDistance = chaseEndReachedDistance;
 			}
 			else
 			{
 				SetState(State.Escaping);
+				aiPath.enableRotation = true;
+				aiPath.slowdownDistance = defaultSlowdownDistance;
+				aiPath.endReachedDistance = defaultEndReachedDistance;
 			}
-			aiPath.slowdownDistance = chaseSlowdownDistance;
-			aiPath.endReachedDistance = chaseEndReachedDistance;
 		}
 
 		void LostTarget()
@@ -178,6 +200,7 @@ namespace Pathfinding
 			{
 				SetState(State.Searching);
 			}
+			aiPath.enableRotation = true;
 			aiPath.slowdownDistance = defaultSlowdownDistance;
 			aiPath.endReachedDistance = defaultEndReachedDistance;
 		}
@@ -294,6 +317,26 @@ namespace Pathfinding
 			}
 		}
 
+		//TODO: Replace with custom hit state values
+		void HitState()
+		{
+			Vector3 targetDirection = lastTargetLocation - transform.position;
+			targetDirection.y = 0;
+
+			float singleStep = rotateSpeed * 2 * Time.deltaTime;
+
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
+
+			Debug.DrawRay(transform.position, newDirection, Color.magenta);
+
+			transform.rotation = Quaternion.LookRotation(newDirection);
+
+			if (Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting)
+			{
+				SetState(State.Aware);
+			}
+		}
+
 		void SearchingState()
 		{
 			if (Time.time >= lastStateChange + maxSearchTime)
@@ -326,7 +369,7 @@ namespace Pathfinding
 
 		void FightingState()
 		{
-			if (ai.reachedEndOfPath)
+			if (true)//ai.reachedEndOfPath)
 			{
 				Vector3 targetDirection = target.position - transform.position;
 				targetDirection.y = 0;
@@ -345,18 +388,17 @@ namespace Pathfinding
 					{
 						if (weapon.GetCurrentAmmo() > 0)
 						{
-							//Debug.Log($"{gameObject.name} is firing");
 							weapon.Fire();
 						}
 						else
 						{
-							//Debug.Log($"{gameObject.name} is reloading");
 							weapon.Reload();
 						}
 					}
 					else
 					{
-						//Debug.Log($"{gameObject.name} has no ammo!");
+						aiPath.enableRotation = true;
+						SetState(State.Escaping);
 					}
 				}
 			}
@@ -364,7 +406,7 @@ namespace Pathfinding
 
 		void EscapingState()
 		{
-
+			//Run from last known player position
 		}
 
 		void DeadState()
@@ -375,6 +417,18 @@ namespace Pathfinding
 		void OnCollisionEnter(Collision collision)
 		{
 			//Handle state after being hit by a bullet
+			if(collision.collider.CompareTag("Projectile"))
+			{
+				if (GetState() != State.Fighting && GetState() != State.Escaping)
+				{
+					lastTargetLocation = collision.transform.position;
+
+					if(WeaponReady())
+					{
+						SetState(State.Hit);
+					}
+				}
+			}
 		}
 
 		private void OnTriggerStay(Collider other)
