@@ -1045,9 +1045,17 @@ PrefabInstance:
       propertyPath: bulletSpawnPoint
       value: 
       objectReference: {fileID: 1879564504}
+    - target: {fileID: 8304253879467557644, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8304253879467557646, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: m_Name
       value: Gun
+      objectReference: {fileID: 0}
+    - target: {fileID: 8304253879467557646, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8304253879467557647, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: m_RootOrder
@@ -1055,7 +1063,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8304253879467557647, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.156
       objectReference: {fileID: 0}
     - target: {fileID: 8304253879467557647, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1095,6 +1103,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8304253880202877752, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8304253880202877755, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3674,6 +3686,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5426927794983757196, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5426927795742918944, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -3730,6 +3746,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5426927795742918948, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426927796042552645, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426927796042552647, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426927796779437424, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
 --- !u!114 &6196250903585798690
@@ -3775,6 +3807,8 @@ MonoBehaviour:
   version: 1
   target: {fileID: 0}
   weapon: {fileID: 0}
+  eyesPosition: {fileID: 0}
+  fieldOfVision: 120
   defaultState: 0
   rotateSpeed: 1
   defaultSlowdownDistance: 0.6
@@ -3799,11 +3833,14 @@ MonoBehaviour:
   maxSearchDistance: {x: 10, y: 0, z: 10}
   searchWaitAtEndOfPathTime: 2
   angleToStartShooting: 5
+  fightingRotateSpeed: 5
+  drawFieldOfVision: 0
+  fieldOfVisionDrawLength: 1
   controller: {fileID: 0}
   lastTargetLocation: {x: 0, y: 0, z: 0}
   targetRotation: {x: 0, y: 0, z: 0}
   currentState: 0
-  rotateAmount: 0
+  lastRotateAmount: 0
   lastStateChange: 0
   stateInitialised: 0
   generalStateTimer: 0
@@ -4168,6 +4205,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 976498169474192611, guid: 6f831a021c29be2489c378624f10825c, type: 3}
+      propertyPath: m_Size.x
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5929406681293030113, guid: 6f831a021c29be2489c378624f10825c, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -4228,6 +4269,10 @@ PrefabInstance:
       propertyPath: weapon
       value: 
       objectReference: {fileID: 1993710613}
+    - target: {fileID: 9078518759018620785, guid: 6f831a021c29be2489c378624f10825c, type: 3}
+      propertyPath: eyesPosition
+      value: 
+      objectReference: {fileID: 143415616}
     - target: {fileID: 9078518759018620785, guid: 6f831a021c29be2489c378624f10825c, type: 3}
       propertyPath: chaseSlowdownDistance
       value: 15

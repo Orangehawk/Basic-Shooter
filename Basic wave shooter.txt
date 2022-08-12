@@ -7,12 +7,16 @@ Basic wave shooter
     Basic AI
     Building-aware AI
     Enemy AI
+        Enemy Cone of vision
     HUD
 
 Bugs
+    Field of Vision causing Searching state randomly
     Camera movement at higher than 60 fps
+    Trails destroy on bullet OnDestroy, fix?
 
 Bonus
+    Enemy AI using Character controller instead of rigidbody
     Slope/Step handling
     Interactable Doors
     Interactable-aware AI

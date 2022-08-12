@@ -94,6 +94,11 @@ namespace Pathfinding
 
 		[Header("Debug")]
 		[SerializeField]
+		bool drawFieldOfVision = false;
+		[SerializeField]
+		float fieldOfVisionDrawLength = 1;
+
+		[SerializeField]
 		CharacterController controller;
 		[SerializeField]
 		Vector3 lastTargetLocation;
@@ -180,7 +185,7 @@ namespace Pathfinding
 			}
 		}
 
-		bool InConeOfVision(Transform target)
+		bool InFieldOfVision(Transform target)
 		{
 			Vector3 direction = target.position - transform.position;
 			float angle = Vector3.Angle(direction, transform.forward);
@@ -486,7 +491,7 @@ namespace Pathfinding
 			if (other.CompareTag("Player"))
 			{
 				RaycastHit hit;
-				if (Physics.Raycast(eyesPosition.position, other.transform.position - transform.position, out hit))
+				if (InFieldOfVision(other.transform) && Physics.Raycast(eyesPosition.position, other.transform.position - transform.position, out hit))
 				{
 					if (hit.collider.CompareTag("Player"))
 					{
@@ -523,10 +528,24 @@ namespace Pathfinding
 			}
 		}
 
+		void DebugDrawFieldOfVision()
+		{
+			Vector3 rightSide = Quaternion.AngleAxis(fieldOfVision/2f, new Vector3(0, 1, 0)) * transform.forward * fieldOfVisionDrawLength;
+			Vector3 leftSide = Quaternion.AngleAxis(-fieldOfVision / 2f, new Vector3(0, 1, 0)) * transform.forward * fieldOfVisionDrawLength;
+
+			Debug.DrawRay(transform.position, rightSide, Color.green);
+			Debug.DrawRay(transform.position, leftSide, Color.green);
+		}
+
 		protected override void Update()
 		{
 			base.Update();
 			HandleState();
+
+			if (drawFieldOfVision)
+			{
+				DebugDrawFieldOfVision();
+			}
 		}
 	}
 }
