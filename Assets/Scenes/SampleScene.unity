@@ -1038,6 +1038,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1888781083}
     m_Modifications:
     - target: {fileID: 8304253879467557643, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
+      propertyPath: totalAmmo
+      value: 1200
+      objectReference: {fileID: 0}
+    - target: {fileID: 8304253879467557643, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: bulletSpawnPoint
       value: 
       objectReference: {fileID: 1879564504}

@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log(other.tag);
+			//Debug.Log(other.tag);
 		}
 	}
 

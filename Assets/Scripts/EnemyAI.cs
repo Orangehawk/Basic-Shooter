@@ -20,6 +20,8 @@ namespace Pathfinding
 		[Header("References")]
 		[SerializeField]
 		Weapon weapon;
+		[SerializeField]
+		Transform eyesPosition;
 
 		[Header("Options")]
 		[SerializeField]
@@ -331,7 +333,7 @@ namespace Pathfinding
 
 			transform.rotation = Quaternion.LookRotation(newDirection);
 
-			if (Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting)
+			if (Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting && GetTarget() == null)
 			{
 				SetState(State.Aware);
 			}
@@ -436,9 +438,21 @@ namespace Pathfinding
 			if (other.CompareTag("Player"))
 			{
 				RaycastHit hit;
-				if (Physics.Raycast(transform.position, other.transform.position, out hit))
+				if (Physics.Raycast(eyesPosition.position, other.transform.position - transform.position, out hit))
 				{
-					SawTarget(other.transform);
+					if (hit.collider.CompareTag("Player"))
+					{
+						Debug.Log($"{name} saw Player");
+						SawTarget(other.transform);
+						return;
+					}
+				}
+
+				//If we didn't see the target directly
+				if (GetTarget() != null)
+				{
+					Debug.Log($"{name} saw Player");
+					LostTarget();
 				}
 			}
 		}
@@ -455,6 +469,7 @@ namespace Pathfinding
 		{
 			if (other.CompareTag("Player") && GetTarget() != null)
 			{
+				Debug.Log($"{name} lost Player");
 				LostTarget();
 			}
 		}
