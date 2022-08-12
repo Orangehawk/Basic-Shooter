@@ -25,6 +25,8 @@ namespace Pathfinding
 
 		[Header("Options")]
 		[SerializeField]
+		float fieldOfVision = 120;
+		[SerializeField]
 		State defaultState = State.Idle;
 		[SerializeField]
 		float rotateSpeed = 1;
@@ -84,6 +86,9 @@ namespace Pathfinding
 		[Header("Fighting State")]
 		[SerializeField]
 		float angleToStartShooting = 5;
+		[SerializeField]
+		float fightingRotateSpeed = 3;
+
 
 		[Header("Escaping State")]
 
@@ -98,7 +103,7 @@ namespace Pathfinding
 		State currentState;
 
 		[SerializeField]
-		float rotateAmount = 0;
+		float lastRotateAmount = 0;
 		[SerializeField]
 		float lastStateChange = 0;
 		[SerializeField]
@@ -165,7 +170,22 @@ namespace Pathfinding
 
 		bool WeaponReady()
 		{
-			if(weapon && weapon.GetTotalAmmo() > 0)
+			if (weapon && weapon.GetTotalAmmo() > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		bool InConeOfVision(Transform target)
+		{
+			Vector3 direction = target.position - transform.position;
+			float angle = Vector3.Angle(direction, transform.forward);
+
+			if (Mathf.Abs(angle) <= fieldOfVision / 2f)
 			{
 				return true;
 			}
@@ -211,7 +231,7 @@ namespace Pathfinding
 		{
 			float amount;
 
-			if(Random.Range(-1f, 1f) < 0)
+			if (Random.Range(-1f, 1f) < 0)
 			{
 				amount = Random.Range(lowMin, lowMax);
 			}
@@ -231,9 +251,9 @@ namespace Pathfinding
 
 				if (randomNum < idleRotateChance)
 				{
-					rotateAmount = GetRandomClampedRange(-idleMaxRotateAmount, -idleMinRotateAmount, idleMinRotateAmount, idleMaxRotateAmount);
+					lastRotateAmount = GetRandomClampedRange(-idleMaxRotateAmount, -idleMinRotateAmount, idleMinRotateAmount, idleMaxRotateAmount);
 					rotationTimer = 0;
-					targetRotation = transform.rotation.eulerAngles + new Vector3(0, rotateAmount, 0);
+					targetRotation = transform.rotation.eulerAngles + new Vector3(0, lastRotateAmount, 0);
 				}
 
 				generalStateTimer = Time.time;
@@ -248,6 +268,26 @@ namespace Pathfinding
 
 		void AwareState()
 		{
+			//Intended to be used for extra searching if player is missed in hitstate, but cone collider should cover it instead
+			//if (!stateInitialised)
+			//{
+			//	if(lastRotateAmount > 0)
+			//	{
+			//		lastRotateAmount = Random.Range(awareMinRotateAmount, awareMaxRotateAmount);
+			//	}
+			//	else if (lastRotateAmount < 0)
+			//	{
+			//		lastRotateAmount = Random.Range(-awareMinRotateAmount, -awareMaxRotateAmount);
+			//	}
+			//	rotationTimer = 0;
+			//	targetRotation = transform.rotation.eulerAngles + new Vector3(0, lastRotateAmount, 0);
+
+			//	stateInitialised = true;
+			//}
+			//else
+			//{
+
+
 			if (Time.time >= lastStateChange + maxAwareTime)
 			{
 				SetState(State.Idle);
@@ -260,13 +300,14 @@ namespace Pathfinding
 				if (randomNum < awareRotateChance)
 				{
 					//rotateAmount = Random.Range(-awareMaxRotateAmount, awareMaxRotateAmount);
-					rotateAmount = GetRandomClampedRange(-awareMaxRotateAmount, -awareMinRotateAmount, awareMinRotateAmount, awareMaxRotateAmount);
+					lastRotateAmount = GetRandomClampedRange(-awareMaxRotateAmount, -awareMinRotateAmount, awareMinRotateAmount, awareMaxRotateAmount);
 					rotationTimer = 0;
-					targetRotation = transform.rotation.eulerAngles + new Vector3(0, rotateAmount, 0);
+					targetRotation = transform.rotation.eulerAngles + new Vector3(0, lastRotateAmount, 0);
 				}
 
 				generalStateTimer = Time.time;
 			}
+			//}
 
 			if (transform.rotation.eulerAngles != targetRotation)
 			{
@@ -312,8 +353,8 @@ namespace Pathfinding
 			{
 				GetNewMoveTarget(transform.position, maxPatrolDistance);
 				SetTarget(moveTarget);
-				UpdateDestination();
-				ai.SearchPath();
+				UpdateDestination(); //TODO: Is this needed?
+				ai.SearchPath(); //TODO: Is this needed?
 				atEndOfPathLastFrame = false;
 				stateInitialised = true;
 			}
@@ -322,10 +363,17 @@ namespace Pathfinding
 		//TODO: Replace with custom hit state values
 		void HitState()
 		{
+			if (!stateInitialised)
+			{
+				aiPath.enableRotation = false;
+				stateInitialised = true;
+			}
+
 			Vector3 targetDirection = lastTargetLocation - transform.position;
+			lastRotateAmount = Vector3.Angle(lastTargetLocation, transform.position);
 			targetDirection.y = 0;
 
-			float singleStep = rotateSpeed * 2 * Time.deltaTime;
+			float singleStep = fightingRotateSpeed * Time.deltaTime;
 
 			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
 
@@ -376,7 +424,7 @@ namespace Pathfinding
 				Vector3 targetDirection = target.position - transform.position;
 				targetDirection.y = 0;
 
-				float singleStep = rotateSpeed * Time.deltaTime;
+				float singleStep = fightingRotateSpeed * Time.deltaTime;
 
 				Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
 
@@ -384,7 +432,7 @@ namespace Pathfinding
 
 				transform.rotation = Quaternion.LookRotation(newDirection);
 
-				if(Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting)
+				if (Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting)
 				{
 					if (weapon.GetTotalAmmo() > 0)
 					{
@@ -419,13 +467,13 @@ namespace Pathfinding
 		void OnCollisionEnter(Collision collision)
 		{
 			//Handle state after being hit by a bullet
-			if(collision.collider.CompareTag("Projectile"))
+			if (collision.collider.CompareTag("Projectile"))
 			{
 				if (GetState() != State.Fighting && GetState() != State.Escaping)
 				{
 					lastTargetLocation = collision.transform.position;
 
-					if(WeaponReady())
+					if (WeaponReady())
 					{
 						SetState(State.Hit);
 					}
@@ -442,8 +490,9 @@ namespace Pathfinding
 				{
 					if (hit.collider.CompareTag("Player"))
 					{
-						Debug.Log($"{name} saw Player");
+						//Debug.Log($"{name} saw Player");
 						SawTarget(other.transform);
+						Debug.DrawLine(eyesPosition.position, hit.point, Color.red);
 						return;
 					}
 				}
@@ -451,7 +500,7 @@ namespace Pathfinding
 				//If we didn't see the target directly
 				if (GetTarget() != null)
 				{
-					Debug.Log($"{name} saw Player");
+					//Debug.Log($"{name} lost Player behind {hit.name}");
 					LostTarget();
 				}
 			}

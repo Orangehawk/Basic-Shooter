@@ -312,8 +312,8 @@ public class PlayerController : MonoBehaviour
 	void HandleRaycastTarget()
 	{
 		target = null;
-		int layerMask = 1 << 8;
-		layerMask = ~layerMask;
+		int layerMask = ~LayerMask.GetMask("Projectiles");
+
 		RaycastHit hit;
 		if (Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, 100f, layerMask, QueryTriggerInteraction.Ignore))
 		{
