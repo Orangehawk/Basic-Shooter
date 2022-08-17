@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
 
 	[Header("References")]
 	[SerializeField]
+	Transform groundCheckPos;
+	[SerializeField]
 	Weapon weapon;
 	[SerializeField]
 	Vector3 weaponHipPosition;
@@ -28,13 +30,16 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	float sprintSpeed = 8;
 	[SerializeField]
-	float jumpSpeed = 3;
+	float jumpHeight = 3;
 	[SerializeField]
 	float aimSpeed = 0.2f;
 
 	[Header("Options")]
 	[SerializeField]
 	bool allowAirMovement = false;
+	[Tooltip("If true, moves the player in the camera direction while in the air")]
+	[SerializeField]
+	bool relativeAirMovement = false;
 
 	[Header("Debug")]
 	CharacterController characterController;
@@ -176,13 +181,7 @@ public class PlayerController : MonoBehaviour
 				playerInput.x = 0;
 			}
 
-			//Stops two inputs from doubling accelleration
-			//if(playerInput.x != 0 && playerInput.z != 0)
-			//{
-			//	playerInput *= 0.5f;
-			//}
-
-			if (Input.GetKey(KeyCode.Space))
+			if (Input.GetKeyDown(KeyCode.Space))
 			{
 				isJumping = true;
 			}
@@ -223,56 +222,32 @@ public class PlayerController : MonoBehaviour
 
 	bool IsGrounded()
 	{
-		//var a = Physics.CheckBox(transform.position + new Vector3(0, -1, 0), new Vector3(0.4f, 0.025f, 0.4f), Quaternion.identity, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
-
-		//if (a)
-		//{
-		//	//Debug.Log("True");
-		//	return true;
-		//}
-
-		////Debug.Log("False");
-		//return false;
-
-		return Physics.CheckBox(transform.position + new Vector3(0, -1, 0), new Vector3(0.4f, 0.025f, 0.4f), Quaternion.identity, ~LayerMask.GetMask("Player", "Ignore Raycast"), QueryTriggerInteraction.Ignore);
+		return isGrounded = Physics.CheckBox(transform.position + groundCheckPos.localPosition, groundCheckPos.localScale/2, Quaternion.identity, ~LayerMask.GetMask("Player", "Projectiles", "Ignore Raycast"), QueryTriggerInteraction.Ignore);
 	}
 
 	void HandleMovement()
 	{
 		Vector3 direction = ((transform.forward * playerInput.z) + (transform.right * playerInput.x)).normalized;
-		//isGrounded = characterController.isGrounded;
+
+		if (!isSprinting)
+		{
+			characterController.Move(direction * moveSpeed * Time.deltaTime);
+		}
+		else
+		{
+			characterController.Move(direction * sprintSpeed * Time.deltaTime);
+		}
 
 		if (IsGrounded())
 		{
 			if (playerVelocity.y < 0)
 			{
-				playerVelocity.y = 0f;
-			}
-
-			//if ((!isSprinting && characterController.velocity.magnitude < walkSpeed) || (isSprinting && characterController.velocity.magnitude < sprintSpeed))
-			if (!isSprinting)
-			{
-				characterController.Move(direction * moveSpeed * Time.deltaTime);
-				//characterController.AddRelativeForce(playerInput);
-			}
-			else
-			{
-				characterController.Move(direction * sprintSpeed * Time.deltaTime);
+				playerVelocity.y = -2f;
 			}
 
 			if (isJumping)
 			{
-				playerVelocity.y += Mathf.Sqrt(jumpSpeed * -3.0f * -Physics.gravity.magnitude);
-				//characterController.AddRelativeForce(0, jumpSpeed, 0, ForceMode.Impulse);
-			}
-		}
-		else
-		{
-			//Debug.Log("Not grounded");
-			if (allowAirMovement)
-			{
-				characterController.Move(direction * moveSpeed * airSpeedMult * Time.deltaTime);
-				//characterController.AddRelativeForce(playerInput * airSpeedMult);
+				playerVelocity.y += Mathf.Sqrt(jumpHeight * -2.0f * -Physics.gravity.magnitude);
 			}
 		}
 
@@ -312,7 +287,7 @@ public class PlayerController : MonoBehaviour
 	void HandleRaycastTarget()
 	{
 		target = null;
-		int layerMask = ~LayerMask.GetMask("Projectiles");
+		int layerMask = ~LayerMask.GetMask("Player", "Projectiles");
 
 		RaycastHit hit;
 		if (Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, 100f, layerMask, QueryTriggerInteraction.Ignore))

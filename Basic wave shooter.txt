@@ -1,23 +1,26 @@
 Basic wave shooter
-    Moving
-    Firing
-    Reloading
-    Jumping
-    Aiming
-    Basic AI
-    Building-aware AI
-    Enemy AI
-        Enemy Cone of vision
-    HUD
+    Moving - Done
+    Firing - Done
+    Reloading - Done
+    Jumping - Done
+    Aiming - Done
+    Basic AI - Done
+    Building-aware AI - Done
+    Enemy AI - WIP
+        Enemy Cone of vision - Done
+    HUD - WIP
 
 Bugs
-    Field of Vision causing Searching state randomly
-    Camera movement at higher than 60 fps
+    Field of Vision causing Searching state randomly - Done - raycast was hitting projectiles
+    Fix target health appearing when sprinting backward - Hitting player collider?
+    Fix player not keeping momentum when jumping - Done
+    Camera movement at higher than 60 fps - Done
     Trails destroy on bullet OnDestroy, fix?
 
 Bonus
     Enemy AI using Character controller instead of rigidbody
-    Slope/Step handling
+    Player dampened air control
+    Slope/Step handling - Done - Character Controller handles this
     Interactable Doors
     Interactable-aware AI
     Security Cameras

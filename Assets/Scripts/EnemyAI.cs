@@ -491,7 +491,7 @@ namespace Pathfinding
 			if (other.CompareTag("Player"))
 			{
 				RaycastHit hit;
-				if (InFieldOfVision(other.transform) && Physics.Raycast(eyesPosition.position, other.transform.position - transform.position, out hit))
+				if (InFieldOfVision(other.transform) && Physics.Raycast(eyesPosition.position, other.transform.position - transform.position, out hit, 250, ~LayerMask.GetMask("Projectiles")))
 				{
 					if (hit.collider.CompareTag("Player"))
 					{
