@@ -8,16 +8,20 @@ public class Bullet : MonoBehaviour
 	[SerializeField]
 	public float InitialVelocity = 1;
 	[SerializeField]
-	float lifeTime = 5f;
+	public float lifeTime = 5f;
 	[SerializeField]
-	float damage = 1;
+	public float damage = 1;
 	[SerializeField]
 	bool enableTrail = false;
 
 	Rigidbody rb;
-	TrailMaker trailMaker;
+	[SerializeField]
+	GameObject trailMaker;
+	[SerializeField]
+	GameObject particlesPrefab;
 
 	float expireTime;
+	bool isQuitting = false;
 
 	// Start is called before the first frame update
 	void Start()
@@ -27,12 +31,12 @@ public class Bullet : MonoBehaviour
 
 		expireTime = Time.time + lifeTime;
 
-		if(enableTrail)
+		if(enableTrail && !trailMaker)
 		{
-			GameObject go = new GameObject("Trail");
-			go.transform.parent = transform;
-			go.transform.localPosition = Vector3.zero;
-			trailMaker = go.AddComponent<TrailMaker>();
+			trailMaker = new GameObject("Trail");
+			trailMaker.transform.parent = transform;
+			trailMaker.transform.localPosition = Vector3.zero;
+			trailMaker.AddComponent<TrailMaker>();
 		}
 	}
 
@@ -40,7 +44,7 @@ public class Bullet : MonoBehaviour
 	{
 		if (!collision.collider.CompareTag("Projectile"))
 		{
-			Debug.Log($"Hit {collision.gameObject.name}");
+			//Debug.Log($"Hit {collision.gameObject.name}");
 
 			HealthComponent hc;
 			if (collision.gameObject.TryGetComponent(out hc))
@@ -48,11 +52,12 @@ public class Bullet : MonoBehaviour
 				hc.Damage(damage);
 			}
 
+			Instantiate(particlesPrefab, transform.position, transform.rotation).transform.localScale = transform.localScale;
 			Destroy(gameObject);
 		}
 		else
 		{
-			Debug.Log($"Hit {collision.gameObject.name} - no HC");
+			//Debug.Log($"Hit {collision.gameObject.name} - no HC");
 		}
 	}
 
@@ -61,13 +66,21 @@ public class Bullet : MonoBehaviour
 	{
 		if (Time.time > expireTime)
 		{
-			Debug.Log($"Bullet expired");
+			//Debug.Log($"Bullet expired");
 			Destroy(gameObject);
 		}
 	}
 
+	void OnApplicationQuit()
+	{
+		isQuitting = true;
+	}
+
 	void OnDestroy()
 	{
-		trailMaker.gameObject.transform.parent = null;
+		if (!isQuitting)
+		{
+			trailMaker.transform.parent = null;
+		}
 	}
 }

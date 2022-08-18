@@ -12,7 +12,12 @@ public class HealthComponent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
+    }
+
+    public float GetMaxHealth()
+    {
+        return maxHealth;
     }
 
     public float GetHealth()
@@ -25,6 +30,10 @@ public class HealthComponent : MonoBehaviour
         return health / maxHealth * 100;
     }
 
+    public event System.Action onDamage = delegate { };
+
+    public event System.Action onHeal = delegate { };
+
     public void Heal(float amount)
 	{
         health += amount;
@@ -33,7 +42,9 @@ public class HealthComponent : MonoBehaviour
 		{
             health = maxHealth;
 		}
-	}
+
+        onHeal();
+    }
 
     public void Damage(float amount)
 	{
@@ -43,6 +54,8 @@ public class HealthComponent : MonoBehaviour
         {
             health = 0;
         }
+
+        onDamage();
     }
 
     public bool IsDead()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -76,6 +77,7 @@ public class GameManager : MonoBehaviour
 	{
 		if (currentState != state)
 		{
+			Debug.Log($"{name} set state to {state}");
 			currentState = state;
 			HandleState();
 		}
@@ -130,12 +132,14 @@ public class GameManager : MonoBehaviour
 	{
 		Time.timeScale = 0;
 		uiManager.SetHudLayer("GameWon");
+		Cursor.lockState = CursorLockMode.None;
 	}
 
 	void GameLostState()
 	{
 		Time.timeScale = 0;
 		uiManager.SetHudLayer("GameLost");
+		Cursor.lockState = CursorLockMode.None;
 	}
 
 	public State GetState()
@@ -147,6 +151,11 @@ public class GameManager : MonoBehaviour
 	void Update()
 	{
 
+	}
+
+	public void Restart()
+	{
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 
 	public void Exit()

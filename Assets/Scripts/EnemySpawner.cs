@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+	public static int totalKills = 0;
 	static int totalSpawns = 0;
 
 	[SerializeField]
@@ -60,6 +61,11 @@ public class EnemySpawner : MonoBehaviour
 		if (individualSpawns < maxIndividualSpawns && totalSpawns < maxTotalSpawns && Time.time > lastSpawn + interval)
 		{
 			SpawnEnemy();
+		}
+
+		if(totalKills == totalSpawns)
+		{
+			GameManager.instance.SetState(GameManager.State.GameWon);
 		}
 	}
 }

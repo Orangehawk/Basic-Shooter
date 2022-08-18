@@ -26,7 +26,7 @@ public class EnemyAI : AIPathfinder
 
 	[Header("Options")]
 	[SerializeField]
-	float fieldOfVision = 120;
+	float fieldOfVision = 80;
 	[SerializeField]
 	public State defaultState = State.Idle;
 	[SerializeField]
@@ -38,9 +38,9 @@ public class EnemyAI : AIPathfinder
 	[SerializeField]
 	float defaultEndReachedDistance = 0.2f;
 	[SerializeField]
-	float chaseSlowdownDistance = 5;
+	float chaseSlowdownDistance = 15;
 	[SerializeField]
-	float chaseEndReachedDistance = 3;
+	float chaseEndReachedDistance = 10;
 
 	[Header("Idle State")]
 	[SerializeField]
@@ -78,7 +78,7 @@ public class EnemyAI : AIPathfinder
 
 	[Header("Hit State")]
 	[SerializeField]
-	float maxChaseTime = 10;
+	float maxChaseTime = 5;
 
 	[Header("Searching State")]
 	[SerializeField]
@@ -101,7 +101,7 @@ public class EnemyAI : AIPathfinder
 	[SerializeField]
 	bool drawFieldOfVision = false;
 	[SerializeField]
-	float fieldOfVisionDrawLength = 1;
+	float fieldOfVisionDrawLength = 30;
 
 	HealthComponent healthComponent;
 	Vector3 lastTargetLocation;
@@ -222,7 +222,7 @@ public class EnemyAI : AIPathfinder
 	{
 		lastTargetLocation = GetTarget().position;
 		SetTarget(null);
-		if (GetState() == State.Fighting)
+		if (GetState() == State.Fighting || GetState() == State.Hit)
 		{
 			SetState(State.Searching);
 		}
@@ -332,11 +332,7 @@ public class EnemyAI : AIPathfinder
 	{
 		if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
 		{
-			if (atEndOfPathLastFrame)
-			{
-				generalStateTimer += Time.deltaTime; //Time since reached end of path
-			}
-			else
+			if (!atEndOfPathLastFrame)
 			{
 				timeReachedEndOfPath = Time.time;
 				atEndOfPathLastFrame = true;
@@ -352,7 +348,6 @@ public class EnemyAI : AIPathfinder
 		}
 	}
 
-	//TODO: Replace with custom hit state values
 	void HitState()
 	{
 		if (!stateInitialised)
@@ -362,23 +357,6 @@ public class EnemyAI : AIPathfinder
 			rotationTimer = 0;
 			generalStateTimer = Time.time;
 		}
-
-		//Vector3 targetDirection = lastTargetLocation - transform.position;
-		//targetDirection = Quaternion.Euler(0, 80, 0) * targetDirection; //Add extra rotation so the player can't escape as easily
-		//targetDirection.y = 0;
-
-		//float singleStep = fightingRotateSpeed * Time.deltaTime;
-
-		//Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
-
-		//Debug.DrawRay(transform.position, newDirection * 20, Color.magenta);
-
-		//transform.rotation = Quaternion.LookRotation(newDirection);
-
-		//if (Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting && GetTarget() == null)
-		//{
-		//	SetState(State.Aware);
-		//}
 
 		if (Time.time > lastStateChange + maxChaseTime)
 		{
@@ -499,6 +477,7 @@ public class EnemyAI : AIPathfinder
 			transform.Rotate(0, 0, 90);
 			transform.Translate(0, -0.5f, 0, Space.World);
 			stateInitialised = true;
+			EnemySpawner.totalKills++;
 			Destroy(gameObject, deathCleanupTime);
 		}
 	}
@@ -512,13 +491,8 @@ public class EnemyAI : AIPathfinder
 			{
 				if (GetState() != State.Fighting && GetState() != State.Escaping)
 				{
-					//lastTargetLocation = collision.transform.position;
 					SetTarget(PlayerController.instance.transform);
 
-					//if (WeaponReady())
-					//{
-					//	SetState(State.Hit);
-					//}
 					if (WeaponReady())
 					{
 						SetState(State.Hit);

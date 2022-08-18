@@ -4,31 +4,44 @@ using UnityEngine;
 
 public class HealthDisplay : MonoBehaviour
 {
-    [SerializeField]
-    string prefix;
-    [SerializeField]
-    UITextPanel textPanel;
-    [SerializeField]
-    HealthComponent healthComponent;
-    //[SerializeField]
-    //bool usePercent = false;
+	[SerializeField]
+	string prefix;
+	[SerializeField]
+	UITextPanel textPanel;
+	[SerializeField]
+	HealthComponent healthComponent;
+	//[SerializeField]
+	//bool usePercent = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+	float lastHealth = 0;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (healthComponent)
-        {
-            textPanel.SetText($"{prefix}: {healthComponent.GetHealthPercent()}%");
-            if(healthComponent.IsDead())
+	// Start is called before the first frame update
+	void Start()
+	{
+		if (healthComponent)
+		{
+			lastHealth = healthComponent.GetHealth();
+		}
+	}
+
+	// Update is called once per frame
+	void Update()
+	{
+		if (healthComponent)
+		{
+			textPanel.SetText($"{prefix}: {healthComponent.GetHealthPercent()}%");
+			if (healthComponent.IsDead())
 			{
-                textPanel.SetBackgroundColor(Color.red);
+				textPanel.SetBackgroundColor(Color.red);
+			}
+			else
+			{
+				if (healthComponent.GetHealth() != lastHealth)
+				{
+					textPanel.SetBackgroundColor(Color.Lerp(Color.red, Color.white, healthComponent.GetHealth() / healthComponent.GetMaxHealth()));
+					lastHealth = healthComponent.GetHealth();
+				}
 			}
 		}
-    }
+	}
 }

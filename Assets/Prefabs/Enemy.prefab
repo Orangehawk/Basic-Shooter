@@ -188,8 +188,8 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.5
+  m_Height: 1.95
+  m_Radius: 0.45
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -233,6 +233,7 @@ MonoBehaviour:
   timeReachedEndOfPath: 0
   patrolWaitAtEndOfPathTime: 5
   atEndOfPathLastFrame: 0
+  maxChaseTime: 5
   maxSearchTime: 20
   maxSearchDistance: {x: 10, y: 0, z: 10}
   searchWaitAtEndOfPathTime: 2
@@ -317,6 +318,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5929406681293030114}
     m_Modifications:
+    - target: {fileID: 8304253879467557643, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
+      propertyPath: damage
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8304253879467557643, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: totalAmmo
       value: 1200

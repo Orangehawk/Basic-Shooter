@@ -12,6 +12,8 @@ public abstract class Weapon : MonoBehaviour
 	[SerializeField]
 	int fireRate = 30; //Bullets per second
 	[SerializeField]
+	int damage = 10; //Bullet damage
+	[SerializeField]
 	float muzzleVelocity = 20;
 	[SerializeField]
 	float magazineSize = 30;
@@ -53,6 +55,7 @@ public abstract class Weapon : MonoBehaviour
 		{
 			GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, transform.rotation);
 			bullet.GetComponent<Bullet>().InitialVelocity = muzzleVelocity;
+			bullet.GetComponent<Bullet>().damage = damage;
 			currentAmmo--;
 			lastShot = Time.time;
 		}

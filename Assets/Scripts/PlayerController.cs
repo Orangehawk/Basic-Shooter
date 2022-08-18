@@ -69,6 +69,9 @@ public class PlayerController : MonoBehaviour
 		uiManager = UIManager.instance;
 
 		cameraRotation = cam.transform.localRotation.eulerAngles;
+
+		healthComponent.onDamage += OnHit;
+		healthComponent.onHeal += OnHeal;
 	}
 
 	public HealthComponent GetHealthComponent()
@@ -261,18 +264,35 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	void OnHit()
+	{
+		uiManager.HitEffect();
+	}
+
+	void OnHeal()
+	{
+		uiManager.HealEffect();
+	}
+
 	// Update is called once per frame
 	void Update()
 	{
-		GetInput();
-
-		if (gameManager.GetState() == GameManager.State.Playing)
+		if (!healthComponent.IsDead())
 		{
-			HandleRotation();
-			HandleMovement();
-			HandleAiming();
-			HandleRaycastTarget();
-			UpdateUI();
+			GetInput();
+
+			if (gameManager.GetState() == GameManager.State.Playing)
+			{
+				HandleRotation();
+				HandleMovement();
+				HandleAiming();
+				HandleRaycastTarget();
+				UpdateUI();
+			}
+		}
+		else
+		{
+			gameManager.SetState(GameManager.State.GameLost);
 		}
 	}
 }

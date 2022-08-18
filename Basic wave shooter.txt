@@ -11,17 +11,20 @@ Basic wave shooter
         Death when out of health - Done
         Escaping state
     HUD - WIP
-    Player Death when out of health
+    Player Death when out of health - Done
+    Bullet Particles
 
 Bugs
+    Change enemy collider size back to normal
     Field of Vision causing Searching state randomly - Done - raycast was hitting projectiles
     Fix target health appearing when sprinting backward - Done - Hitting player collider?
     Fix player not keeping momentum when jumping - Done
     Camera movement at higher than 60 fps - Done - changed to CharacterController
-    Trails destroy on bullet OnDestroy, fix?
+    Trails destroy on bullet OnDestroy, fix? - Done
     Adjust HitState rotation speed to be fixed rather than increase over time - Done - changed hitstate to be a magic tracking state for a few seconds instead
 
 Bonus
+    Enemy HP Bar
     Enemy AI using Character controller instead of rigidbody - Done - Already is
     Enemy AI Panicking state
     Player dampened air control

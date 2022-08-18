@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : MonoBehaviour
@@ -11,11 +12,27 @@ public class UIManager : MonoBehaviour
 	GameObject playingHud;
 	[SerializeField]
 	GameObject pausedHud;
+	[SerializeField]
+	GameObject gameWonHud;
+	[SerializeField]
+	GameObject gameLostHud;
 
 	[SerializeField]
 	public UITextPanel targetPanel;
 	[SerializeField]
 	public UITextPanel ammoPanel;
+	[SerializeField]
+	Image hitEffect;
+	[SerializeField]
+	float hitEffectIncrease = 0.05f;
+	[SerializeField]
+	float maxHitEffect = 0.3f;
+	[SerializeField]
+	Image healEffect;
+	[SerializeField]
+	float healEffectFade = 0.3f;
+	[SerializeField]
+	float maxHealEffect = 0.3f;
 
 	// Start is called before the first frame update
 	void Awake()
@@ -38,15 +55,24 @@ public class UIManager : MonoBehaviour
 
 	public void SetHudLayer(string layer)
 	{
-		switch(layer)
+		playingHud.SetActive(false);
+		pausedHud.SetActive(false);
+		gameWonHud.SetActive(false);
+		gameLostHud.SetActive(false);
+
+		switch (layer)
 		{
 			case "Playing":
 				playingHud.SetActive(true);
-				pausedHud.SetActive(false);
 				break;
 			case "Paused":
-				playingHud.SetActive(false);
 				pausedHud.SetActive(true);
+				break;
+			case "GameWon":
+				gameWonHud.SetActive(true);
+				break;
+			case "GameLost":
+				gameLostHud.SetActive(true);
 				break;
 			default:
 				Debug.LogWarning($"Invalid hud layer \"{layer}\"");
@@ -72,10 +98,31 @@ public class UIManager : MonoBehaviour
 		ammoPanel.SetText($"Ammo: {ammo}/{totalAmmo}");
 	}
 
+	public void HitEffect()
+	{
+		AddImageAlpha(hitEffect, hitEffectIncrease, maxHitEffect);
+	}
 
-	// Update is called once per frame
+	public void HealEffect()
+	{
+		AddImageAlpha(healEffect, maxHealEffect, maxHealEffect);
+	}
+
+	void AddImageAlpha(Image image, float amount, float max = 1, float min = 0)
+	{
+		Color c = image.color;
+
+		c.a += amount;
+
+		c.a = Mathf.Clamp(c.a, min, max);
+		image.color = c;
+	}
+
 	void Update()
 	{
-
+		//Slowly lower hit effect over time
+		AddImageAlpha(hitEffect, -hitEffectIncrease * Time.deltaTime);
+		//Slowly lower heal effect over time
+		AddImageAlpha(healEffect, -healEffectFade * Time.deltaTime);
 	}
 }
