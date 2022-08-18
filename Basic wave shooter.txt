@@ -8,20 +8,26 @@ Basic wave shooter
     Building-aware AI - Done
     Enemy AI - WIP
         Enemy Cone of vision - Done
+        Death when out of health
+        Escaping state
     HUD - WIP
+    Player Death when out of health
 
 Bugs
     Field of Vision causing Searching state randomly - Done - raycast was hitting projectiles
-    Fix target health appearing when sprinting backward - Hitting player collider?
+    Fix target health appearing when sprinting backward - Done - Hitting player collider?
     Fix player not keeping momentum when jumping - Done
     Camera movement at higher than 60 fps - Done
     Trails destroy on bullet OnDestroy, fix?
+    Adjust HitState rotation speed to be fixed rather than increase over time - rotate vector3 around?
 
 Bonus
     Enemy AI using Character controller instead of rigidbody
+    Enemy AI Panicking state
     Player dampened air control
     Slope/Step handling - Done - Character Controller handles this
     Interactable Doors
     Interactable-aware AI
     Security Cameras
     Crouching
+    FFXIV-style minibosses

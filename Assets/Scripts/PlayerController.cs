@@ -24,8 +24,6 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	float moveSpeed = 2;
 	[SerializeField]
-	float airSpeedMult = 0.25f;
-	[SerializeField]
 	float walkSpeed = 5;
 	[SerializeField]
 	float sprintSpeed = 8;
@@ -34,14 +32,6 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	float aimSpeed = 0.2f;
 
-	[Header("Options")]
-	[SerializeField]
-	bool allowAirMovement = false;
-	[Tooltip("If true, moves the player in the camera direction while in the air")]
-	[SerializeField]
-	bool relativeAirMovement = false;
-
-	[Header("Debug")]
 	CharacterController characterController;
 	HealthComponent healthComponent;
 	Vector2 mouseInput = Vector2.zero;
@@ -51,20 +41,11 @@ public class PlayerController : MonoBehaviour
 	UIManager uiManager;
 	GameObject target;
 
-	[SerializeField]
-	bool useFixedUpdateCamera = false;
-	[SerializeField]
-	bool useFixedUpdateMovement = false;
-	[SerializeField]
-	bool isGrounded;
 	bool isSprinting = false;
 	bool isJumping = false;
-	[SerializeField]
 	bool isAiming = false;
-	float aimTimer = 0;
 	Vector3 weaponVelocity = Vector3.zero;
 	Vector3 cameraRotation = Vector3.zero;
-	[SerializeField]
 	Vector3 playerVelocity = Vector3.zero;
 
 	void Awake()
@@ -92,26 +73,6 @@ public class PlayerController : MonoBehaviour
 		cameraRotation = cam.transform.localRotation.eulerAngles;
 	}
 
-	private void OnTriggerEnter(Collider other)
-	{
-		if (other.CompareTag("Ground"))
-		{
-			isGrounded = true;
-		}
-		else
-		{
-			//Debug.Log(other.tag);
-		}
-	}
-
-	private void OnTriggerExit(Collider other)
-	{
-		if (other.CompareTag("Ground"))
-		{
-			isGrounded = false;
-		}
-	}
-
 	public HealthComponent GetHealthComponent()
 	{
 		return healthComponent;
@@ -132,28 +93,9 @@ public class PlayerController : MonoBehaviour
 
 		if (gameManager.GetState() == GameManager.State.Playing)
 		{
-			if (useFixedUpdateCamera)
-			{
-				mouseInput.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity.x;
-				mouseInput.y += -Input.GetAxisRaw("Mouse Y") * mouseSensitivity.y;
-			}
-			else
-			{
-				mouseInput.x = Input.GetAxisRaw("Mouse X");
-				mouseInput.y = -Input.GetAxisRaw("Mouse Y");
-				mouseInput *= mouseSensitivity;
-			}
-
-
-			if (Input.GetKeyDown(KeyCode.Q))
-			{
-				useFixedUpdateCamera = !useFixedUpdateCamera;
-			}
-
-			if (Input.GetKeyDown(KeyCode.E))
-			{
-				useFixedUpdateMovement = !useFixedUpdateMovement;
-			}
+			mouseInput.x = Input.GetAxisRaw("Mouse X");
+			mouseInput.y = -Input.GetAxisRaw("Mouse Y");
+			mouseInput *= mouseSensitivity;
 
 			if (Input.GetKey(KeyCode.W))
 			{
@@ -222,7 +164,7 @@ public class PlayerController : MonoBehaviour
 
 	bool IsGrounded()
 	{
-		return isGrounded = Physics.CheckBox(transform.position + groundCheckPos.localPosition, groundCheckPos.localScale/2, Quaternion.identity, ~LayerMask.GetMask("Player", "Projectiles", "Ignore Raycast"), QueryTriggerInteraction.Ignore);
+		return Physics.CheckBox(transform.position + groundCheckPos.localPosition, groundCheckPos.localScale/2, Quaternion.identity, ~LayerMask.GetMask("Player", "Projectiles", "Ignore Raycast"), QueryTriggerInteraction.Ignore);
 	}
 
 	void HandleMovement()
@@ -265,11 +207,6 @@ public class PlayerController : MonoBehaviour
 		cameraRotation.x = Mathf.Clamp(cameraRotation.x, -90, 90);
 
 		cam.transform.localRotation = Quaternion.Euler(cameraRotation);
-
-		if (useFixedUpdateCamera)
-		{
-			mouseInput = Vector2.zero;
-		}
 	}
 
 	void HandleAiming()
@@ -326,24 +263,6 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	void FixedUpdate()
-	{
-		if (useFixedUpdateCamera)
-		{
-			HandleRotation();
-		}
-
-		if (useFixedUpdateMovement)
-		{
-			HandleMovement();
-		}
-	}
-
-	void LateUpdate()
-	{
-
-	}
-
 	// Update is called once per frame
 	void Update()
 	{
@@ -351,15 +270,8 @@ public class PlayerController : MonoBehaviour
 
 		if (gameManager.GetState() == GameManager.State.Playing)
 		{
-			if (!useFixedUpdateCamera)
-			{
-				HandleRotation();
-			}
-
-			if (!useFixedUpdateMovement)
-			{
-				HandleMovement();
-			}
+			HandleRotation();
+			HandleMovement();
 			HandleAiming();
 			HandleRaycastTarget();
 			UpdateUI();

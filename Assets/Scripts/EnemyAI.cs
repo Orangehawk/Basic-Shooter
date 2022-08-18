@@ -14,7 +14,8 @@ namespace Pathfinding
 			Hit,
 			Searching,
 			Fighting,
-			Escaping
+			Escaping,
+			Dead
 		}
 
 		[Header("References")]
@@ -22,6 +23,8 @@ namespace Pathfinding
 		Weapon weapon;
 		[SerializeField]
 		Transform eyesPosition;
+		[SerializeField]
+		CharacterController characterController;
 
 		[Header("Options")]
 		[SerializeField]
@@ -30,6 +33,8 @@ namespace Pathfinding
 		State defaultState = State.Idle;
 		[SerializeField]
 		float rotateSpeed = 1;
+		[SerializeField]
+		float deathCleanupTime = 5;
 		[SerializeField]
 		float defaultSlowdownDistance = 0.6f;
 		[SerializeField]
@@ -90,7 +95,7 @@ namespace Pathfinding
 		float fightingRotateSpeed = 3;
 
 
-		[Header("Escaping State")]
+		//[Header("Escaping State")]
 
 		[Header("Debug")]
 		[SerializeField]
@@ -98,30 +103,21 @@ namespace Pathfinding
 		[SerializeField]
 		float fieldOfVisionDrawLength = 1;
 
-		[SerializeField]
-		CharacterController controller;
-		[SerializeField]
+		HealthComponent healthComponent;
 		Vector3 lastTargetLocation;
-		[SerializeField]
 		Vector3 targetRotation;
-		[SerializeField]
 		State currentState;
 
-		[SerializeField]
 		float lastRotateAmount = 0;
-		[SerializeField]
 		float lastStateChange = 0;
-		[SerializeField]
 		bool stateInitialised = false; //Generic initialised variable for states to manage their init
-		[SerializeField]
 		float generalStateTimer = 0; //Timer variable used however the active state wants
-		[SerializeField]
 		float rotationTimer = 0;
 
 		void Start()
 		{
-			controller = GetComponent<CharacterController>();
-
+			healthComponent = GetComponent<HealthComponent>();
+			characterController = GetComponent<CharacterController>();
 			moveTarget = new GameObject("Move target").transform;
 
 			SetState(defaultState);
@@ -167,6 +163,9 @@ namespace Pathfinding
 					break;
 				case State.Escaping:
 					EscapingState();
+					break;
+				case State.Dead:
+					DeadState();
 					break;
 				default:
 					break;
@@ -273,26 +272,6 @@ namespace Pathfinding
 
 		void AwareState()
 		{
-			//Intended to be used for extra searching if player is missed in hitstate, but cone collider should cover it instead
-			//if (!stateInitialised)
-			//{
-			//	if(lastRotateAmount > 0)
-			//	{
-			//		lastRotateAmount = Random.Range(awareMinRotateAmount, awareMaxRotateAmount);
-			//	}
-			//	else if (lastRotateAmount < 0)
-			//	{
-			//		lastRotateAmount = Random.Range(-awareMinRotateAmount, -awareMaxRotateAmount);
-			//	}
-			//	rotationTimer = 0;
-			//	targetRotation = transform.rotation.eulerAngles + new Vector3(0, lastRotateAmount, 0);
-
-			//	stateInitialised = true;
-			//}
-			//else
-			//{
-
-
 			if (Time.time >= lastStateChange + maxAwareTime)
 			{
 				SetState(State.Idle);
@@ -304,7 +283,6 @@ namespace Pathfinding
 
 				if (randomNum < awareRotateChance)
 				{
-					//rotateAmount = Random.Range(-awareMaxRotateAmount, awareMaxRotateAmount);
 					lastRotateAmount = GetRandomClampedRange(-awareMaxRotateAmount, -awareMinRotateAmount, awareMinRotateAmount, awareMaxRotateAmount);
 					rotationTimer = 0;
 					targetRotation = transform.rotation.eulerAngles + new Vector3(0, lastRotateAmount, 0);
@@ -312,7 +290,6 @@ namespace Pathfinding
 
 				generalStateTimer = Time.time;
 			}
-			//}
 
 			if (transform.rotation.eulerAngles != targetRotation)
 			{
@@ -372,24 +349,43 @@ namespace Pathfinding
 			{
 				aiPath.enableRotation = false;
 				stateInitialised = true;
+				rotationTimer = 0;
 			}
 
 			Vector3 targetDirection = lastTargetLocation - transform.position;
-			lastRotateAmount = Vector3.Angle(lastTargetLocation, transform.position);
-			targetDirection.y = 0;
+			float angle = Vector3.Angle(lastTargetLocation, transform.position);
+			angle += 120;
+			//lastRotateAmount = Vector3.Angle(lastTargetLocation, transform.position);
+			//targetDirection.y = 0;
 
-			float singleStep = fightingRotateSpeed * Time.deltaTime;
+			//float singleStep = fightingRotateSpeed * Time.deltaTime;
 
-			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
+			//Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
 
-			Debug.DrawRay(transform.position, newDirection, Color.magenta);
+			//Debug.DrawRay(transform.position, newDirection * 20, Color.magenta);
 
-			transform.rotation = Quaternion.LookRotation(newDirection);
+			//transform.rotation = Quaternion.LookRotation(newDirection);
+
+			//rotateAmount = Random.Range(-awareMaxRotateAmount, awareMaxRotateAmount);
+			//lastRotateAmount = GetRandomClampedRange(-awareMaxRotateAmount, -awareMinRotateAmount, awareMinRotateAmount, awareMaxRotateAmount);
+			//rotationTimer = 0;
+			targetRotation = transform.rotation.eulerAngles + new Vector3(0, angle, 0);
+
+			if (transform.rotation.eulerAngles != targetRotation)
+			{
+				rotationTimer += fightingRotateSpeed * Time.deltaTime;
+				transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(targetRotation), rotationTimer * Time.deltaTime);
+			}
 
 			if (Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting && GetTarget() == null)
 			{
 				SetState(State.Aware);
 			}
+
+			//if (Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting && GetTarget() == null)
+			//{
+			//	SetState(State.Aware);
+			//}
 		}
 
 		void SearchingState()
@@ -424,37 +420,34 @@ namespace Pathfinding
 
 		void FightingState()
 		{
-			if (true)//ai.reachedEndOfPath)
+			Vector3 targetDirection = target.position - transform.position;
+			targetDirection.y = 0;
+
+			float singleStep = fightingRotateSpeed * Time.deltaTime;
+
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
+
+			Debug.DrawRay(transform.position, newDirection, Color.red);
+
+			transform.rotation = Quaternion.LookRotation(newDirection);
+
+			if (Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting)
 			{
-				Vector3 targetDirection = target.position - transform.position;
-				targetDirection.y = 0;
-
-				float singleStep = fightingRotateSpeed * Time.deltaTime;
-
-				Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
-
-				Debug.DrawRay(transform.position, newDirection, Color.red);
-
-				transform.rotation = Quaternion.LookRotation(newDirection);
-
-				if (Vector3.Angle(targetDirection, transform.forward) <= angleToStartShooting)
+				if (weapon.GetTotalAmmo() > 0)
 				{
-					if (weapon.GetTotalAmmo() > 0)
+					if (weapon.GetCurrentAmmo() > 0)
 					{
-						if (weapon.GetCurrentAmmo() > 0)
-						{
-							weapon.Fire();
-						}
-						else
-						{
-							weapon.Reload();
-						}
+						weapon.Fire();
 					}
 					else
 					{
-						aiPath.enableRotation = true;
-						SetState(State.Escaping);
+						weapon.Reload();
 					}
+				}
+				else
+				{
+					aiPath.enableRotation = true;
+					SetState(State.Escaping);
 				}
 			}
 		}
@@ -466,21 +459,36 @@ namespace Pathfinding
 
 		void DeadState()
 		{
-
+			if (!stateInitialised)
+			{
+				aiPath.enabled = false;
+				characterController.enabled = false;
+				transform.Rotate(0, 0, 90);
+				transform.Translate(0, -0.5f, 0, Space.World);
+				stateInitialised = true;
+				Destroy(gameObject, deathCleanupTime);
+			}
 		}
 
 		void OnCollisionEnter(Collision collision)
 		{
-			//Handle state after being hit by a bullet
-			if (collision.collider.CompareTag("Projectile"))
+			if (GetState() != State.Dead)
 			{
-				if (GetState() != State.Fighting && GetState() != State.Escaping)
+				//Handle state after being hit by a bullet
+				if (collision.collider.CompareTag("Projectile"))
 				{
-					lastTargetLocation = collision.transform.position;
-
-					if (WeaponReady())
+					if (GetState() != State.Fighting && GetState() != State.Escaping)
 					{
-						SetState(State.Hit);
+						lastTargetLocation = collision.transform.position;
+
+						if (WeaponReady())
+						{
+							SetState(State.Hit);
+						}
+						else
+						{
+							SetState(State.Escaping);
+						}
 					}
 				}
 			}
@@ -488,49 +496,44 @@ namespace Pathfinding
 
 		private void OnTriggerStay(Collider other)
 		{
-			if (other.CompareTag("Player"))
+			if (GetState() != State.Dead)
 			{
-				RaycastHit hit;
-				if (InFieldOfVision(other.transform) && Physics.Raycast(eyesPosition.position, other.transform.position - transform.position, out hit, 250, ~LayerMask.GetMask("Projectiles")))
+				if (other.CompareTag("Player"))
 				{
-					if (hit.collider.CompareTag("Player"))
+					RaycastHit hit;
+					if (InFieldOfVision(other.transform) && Physics.Raycast(eyesPosition.position, other.transform.position - transform.position, out hit, 250, ~LayerMask.GetMask("Projectiles")))
 					{
-						//Debug.Log($"{name} saw Player");
-						SawTarget(other.transform);
-						Debug.DrawLine(eyesPosition.position, hit.point, Color.red);
-						return;
+						if (hit.collider.CompareTag("Player"))
+						{
+							SawTarget(other.transform);
+							Debug.DrawLine(eyesPosition.position, hit.point, Color.red);
+							return;
+						}
+					}
+
+					//If we didn't see the target directly
+					if (GetTarget() != null)
+					{
+						LostTarget();
 					}
 				}
-
-				//If we didn't see the target directly
-				if (GetTarget() != null)
-				{
-					//Debug.Log($"{name} lost Player behind {hit.name}");
-					LostTarget();
-				}
-			}
-		}
-
-		void OnTriggerEnter(Collider other)
-		{
-			if (other.CompareTag("Player"))
-			{
-				//SawTarget(other.transform);
 			}
 		}
 
 		void OnTriggerExit(Collider other)
 		{
-			if (other.CompareTag("Player") && GetTarget() != null)
+			if (GetState() != State.Dead)
 			{
-				Debug.Log($"{name} lost Player");
-				LostTarget();
+				if (other.CompareTag("Player") && GetTarget() != null)
+				{
+					LostTarget();
+				}
 			}
 		}
 
 		void DebugDrawFieldOfVision()
 		{
-			Vector3 rightSide = Quaternion.AngleAxis(fieldOfVision/2f, new Vector3(0, 1, 0)) * transform.forward * fieldOfVisionDrawLength;
+			Vector3 rightSide = Quaternion.AngleAxis(fieldOfVision / 2f, new Vector3(0, 1, 0)) * transform.forward * fieldOfVisionDrawLength;
 			Vector3 leftSide = Quaternion.AngleAxis(-fieldOfVision / 2f, new Vector3(0, 1, 0)) * transform.forward * fieldOfVisionDrawLength;
 
 			Debug.DrawRay(transform.position, rightSide, Color.green);
@@ -539,13 +542,25 @@ namespace Pathfinding
 
 		protected override void Update()
 		{
-			base.Update();
-			HandleState();
-
-			if (drawFieldOfVision)
+			if (!healthComponent.IsDead())
 			{
-				DebugDrawFieldOfVision();
+				base.Update();
+				
+
+				if (drawFieldOfVision)
+				{
+					DebugDrawFieldOfVision();
+				}
 			}
+			else
+			{
+				if (GetState() != State.Dead)
+				{
+					SetState(State.Dead);
+				}
+			}
+
+			HandleState();
 		}
 	}
 }
