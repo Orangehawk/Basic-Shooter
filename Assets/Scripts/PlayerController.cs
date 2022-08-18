@@ -22,8 +22,6 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	Vector2 mouseSensitivity = Vector2.one;
 	[SerializeField]
-	float moveSpeed = 2;
-	[SerializeField]
 	float walkSpeed = 5;
 	[SerializeField]
 	float sprintSpeed = 8;
@@ -173,7 +171,7 @@ public class PlayerController : MonoBehaviour
 
 		if (!isSprinting)
 		{
-			characterController.Move(direction * moveSpeed * Time.deltaTime);
+			characterController.Move(direction * walkSpeed * Time.deltaTime);
 		}
 		else
 		{
