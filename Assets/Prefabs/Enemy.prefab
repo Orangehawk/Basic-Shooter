@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 143415616}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 8875870684099824713}
   - component: {fileID: 5357248000747296121}
   - component: {fileID: 6749793862417880928}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: HealthbarBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 1781164717}
   - component: {fileID: 1781164722}
   - component: {fileID: 1781164721}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Healthbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 9078518759018620785}
   - component: {fileID: 9078518759018620784}
   - component: {fileID: 9078518759018620799}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -531,6 +531,22 @@ PrefabInstance:
       propertyPath: bulletSpawnPoint
       value: 
       objectReference: {fileID: 1063907593933664102}
+    - target: {fileID: 8304253879467557643, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
+      propertyPath: weaponAimPosition.y
+      value: 0.124
+      objectReference: {fileID: 0}
+    - target: {fileID: 8304253879467557643, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
+      propertyPath: weaponHipPosition.x
+      value: 0.156
+      objectReference: {fileID: 0}
+    - target: {fileID: 8304253879467557643, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
+      propertyPath: weaponHipPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8304253879467557643, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
+      propertyPath: weaponHipPosition.z
+      value: 0.731
+      objectReference: {fileID: 0}
     - target: {fileID: 8304253879467557644, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -541,7 +557,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8304253879467557646, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 8304253879467557647, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: m_RootOrder
@@ -593,7 +609,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8304253880202877755, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 086ac2efe95fe6b49840d6763014a366, type: 3}

@@ -10,6 +10,13 @@ public abstract class Weapon : MonoBehaviour
 	Transform bulletSpawnPoint;
 
 	[SerializeField]
+	Vector3 weaponHipPosition;
+	[SerializeField]
+	Vector3 weaponAimPosition;
+
+	[SerializeField]
+	float aimSpeed = 0.2f;
+	[SerializeField]
 	int fireRate = 30; //Bullets per second
 	[SerializeField]
 	int damage = 10; //Bullet damage
@@ -28,12 +35,11 @@ public abstract class Weapon : MonoBehaviour
 	[SerializeField]
 	bool infiniteAmmo = false;
 
-	[SerializeField]
 	bool isReloading = false;
-	[SerializeField]
 	float lastShot = 0;
-	[SerializeField]
 	float timeBetweenShots = 0;
+	bool isAiming = false;
+	Vector3 weaponVelocity = Vector3.zero;
 
 	// Start is called before the first frame update
 	protected virtual void Start()
@@ -54,6 +60,23 @@ public abstract class Weapon : MonoBehaviour
 	public float GetTotalAmmo()
 	{
 		return totalAmmo;
+	}
+
+	void HandleAiming()
+	{
+		if (isAiming)
+		{
+			transform.localPosition = Vector3.SmoothDamp(transform.localPosition, weaponAimPosition, ref weaponVelocity, aimSpeed);
+		}
+		else
+		{
+			transform.localPosition = Vector3.SmoothDamp(transform.localPosition, weaponHipPosition, ref weaponVelocity, aimSpeed);
+		}
+	}
+
+	public void SetAiming(bool aiming)
+	{
+		isAiming = aiming;
 	}
 
 	public void Fire()
@@ -116,6 +139,6 @@ public abstract class Weapon : MonoBehaviour
 	// Update is called once per frame
 	protected virtual void Update()
 	{
-
+		HandleAiming();
 	}
 }

@@ -52,7 +52,11 @@ public class Bullet : MonoBehaviour
 				hc.Damage(damage);
 			}
 
-			Instantiate(particlesPrefab, transform.position, transform.rotation);//.transform.localScale = transform.localScale;
+			if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+			{
+				GameObject o = Instantiate(particlesPrefab, collision.GetContact(0).point, Quaternion.identity);//.transform.localScale = transform.localScale;
+				o.transform.forward = collision.GetContact(0).normal;
+			}
 			Destroy(gameObject);
 		}
 		else

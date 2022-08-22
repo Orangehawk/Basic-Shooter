@@ -14,9 +14,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	Weapon weapon;
 	[SerializeField]
-	Vector3 weaponHipPosition;
-	[SerializeField]
-	Vector3 weaponAimPosition;
+	AudioSource footstepAudio;
 
 	[Header("Speed/Sensitivity")]
 	[SerializeField]
@@ -27,9 +25,7 @@ public class PlayerController : MonoBehaviour
 	float sprintSpeed = 8;
 	[SerializeField]
 	float jumpHeight = 3;
-	[SerializeField]
-	float aimSpeed = 0.2f;
-
+	
 	CharacterController characterController;
 	HealthComponent healthComponent;
 	Vector2 mouseInput = Vector2.zero;
@@ -42,7 +38,6 @@ public class PlayerController : MonoBehaviour
 	bool isSprinting = false;
 	bool isJumping = false;
 	bool isAiming = false;
-	Vector3 weaponVelocity = Vector3.zero;
 	Vector3 cameraRotation = Vector3.zero;
 	Vector3 playerVelocity = Vector3.zero;
 
@@ -57,6 +52,8 @@ public class PlayerController : MonoBehaviour
 		{
 			instance = this;
 		}
+
+		lastPos = transform.position;
 	}
 
 	// Start is called before the first frame update
@@ -173,11 +170,11 @@ public class PlayerController : MonoBehaviour
 
 			if (Input.GetMouseButton(1))
 			{
-				isAiming = true;
+				weapon.SetAiming(true);
 			}
 			else
 			{
-				isAiming = false;
+				weapon.SetAiming(false);
 			}
 		}
 	}
@@ -229,18 +226,6 @@ public class PlayerController : MonoBehaviour
 		cam.transform.localRotation = Quaternion.Euler(cameraRotation);
 	}
 
-	void HandleAiming()
-	{
-		if (isAiming)
-		{
-			weapon.transform.localPosition = Vector3.SmoothDamp(weapon.transform.localPosition, weaponAimPosition, ref weaponVelocity, aimSpeed);
-		}
-		else
-		{
-			weapon.transform.localPosition = Vector3.SmoothDamp(weapon.transform.localPosition, weaponHipPosition, ref weaponVelocity, aimSpeed);
-		}
-	}
-
 	void HandleRaycastTarget()
 	{
 		target = null;
@@ -251,19 +236,18 @@ public class PlayerController : MonoBehaviour
 		{
 			target = hit.collider.gameObject;
 
-			HealthComponent temp;
-			if (hit.collider.gameObject.TryGetComponent(out temp))
+			if (hit.collider.gameObject.TryGetComponent(out HealthComponent temp))
 			{
-				Debug.DrawRay(cam.transform.position, cam.transform.TransformDirection(Vector3.forward) * hit.distance, Color.red);
+				//Debug.DrawRay(cam.transform.position, cam.transform.TransformDirection(Vector3.forward) * hit.distance, Color.red);
 			}
 			else
 			{
-				Debug.DrawRay(cam.transform.position, cam.transform.TransformDirection(Vector3.forward) * hit.distance, Color.green);
+				//Debug.DrawRay(cam.transform.position, cam.transform.TransformDirection(Vector3.forward) * hit.distance, Color.green);
 			}
 		}
 		else
 		{
-			Debug.DrawRay(cam.transform.position, cam.transform.TransformDirection(Vector3.forward) * 100, Color.blue);
+			//Debug.DrawRay(cam.transform.position, cam.transform.TransformDirection(Vector3.forward) * 100, Color.blue);
 		}
 
 	}
@@ -304,7 +288,6 @@ public class PlayerController : MonoBehaviour
 			{
 				HandleRotation();
 				HandleMovement();
-				HandleAiming();
 				HandleRaycastTarget();
 				UpdateUI();
 			}
