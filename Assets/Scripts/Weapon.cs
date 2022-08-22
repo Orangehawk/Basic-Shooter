@@ -25,6 +25,8 @@ public abstract class Weapon : MonoBehaviour
 	bool discardMagazine = false; //Throws away all extra ammo in the magazine when reloading
 	[SerializeField]
 	float totalAmmo = 120;
+	[SerializeField]
+	bool infiniteAmmo = false;
 
 	[SerializeField]
 	bool isReloading = false;
@@ -37,6 +39,11 @@ public abstract class Weapon : MonoBehaviour
 	protected virtual void Start()
 	{
 		timeBetweenShots = 1f / fireRate;
+	}
+
+	public void AddAmmo(float amount)
+	{
+		totalAmmo += amount;
 	}
 
 	public float GetCurrentAmmo()
@@ -63,7 +70,7 @@ public abstract class Weapon : MonoBehaviour
 
 	public void Reload()
 	{
-		if (!isReloading && currentAmmo < magazineSize)
+		if ((!isReloading && currentAmmo < magazineSize) || infiniteAmmo)
 		{
 			StartCoroutine(ReloadCoroutine());
 		}
@@ -73,24 +80,34 @@ public abstract class Weapon : MonoBehaviour
 	{
 		isReloading = true;
 
-		if (!discardMagazine)
+		if (!infiniteAmmo)
 		{
-			totalAmmo += currentAmmo;
-		}
+			if (!discardMagazine)
+			{
+				totalAmmo += currentAmmo;
+			}
 
-		currentAmmo = 0;
+			currentAmmo = 0;
+		}
 
 		yield return new WaitForSeconds(reloadTime);
 
-		if (totalAmmo >= magazineSize)
+		if (!infiniteAmmo)
 		{
-			currentAmmo = magazineSize;
-			totalAmmo -= magazineSize;
+			if (totalAmmo >= magazineSize)
+			{
+				currentAmmo = magazineSize;
+				totalAmmo -= magazineSize;
+			}
+			else
+			{
+				currentAmmo = totalAmmo;
+				totalAmmo = 0;
+			}
 		}
 		else
 		{
-			currentAmmo = totalAmmo;
-			totalAmmo = 0;
+			currentAmmo = magazineSize;
 		}
 
 		isReloading = false;

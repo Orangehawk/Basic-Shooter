@@ -34,8 +34,11 @@ public class HealthComponent : MonoBehaviour
 
     public event System.Action onHeal = delegate { };
 
-    public void Heal(float amount)
+    public bool Heal(float amount)
 	{
+        if (health >= maxHealth)
+            return false;
+
         health += amount;
 
         if(health > maxHealth)
@@ -44,6 +47,7 @@ public class HealthComponent : MonoBehaviour
 		}
 
         onHeal();
+        return true;
     }
 
     public void Damage(float amount)

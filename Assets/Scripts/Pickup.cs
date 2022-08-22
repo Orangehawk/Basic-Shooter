@@ -2,22 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pickup : MonoBehaviour
+public interface ICollectable
 {
-	public enum PickupType
-	{
-		Health,
-		Ammo
-	}
-
-	[SerializeField]
-	protected PickupType pickupType;
-
-	[SerializeField]
-	protected float amount = 30;
-
-	public void Take()
-	{
-		Destroy(gameObject);
-	}
+	public void Collect(GameObject collector);
 }

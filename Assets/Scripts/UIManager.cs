@@ -22,17 +22,14 @@ public class UIManager : MonoBehaviour
 	[SerializeField]
 	public UITextPanel ammoPanel;
 	[SerializeField]
-	Image hitEffect;
+	UIFlash hitEffect;
+	//[SerializeField]
+	//float hitEffectIncrease = 0.05f;
+
 	[SerializeField]
-	float hitEffectIncrease = 0.05f;
-	[SerializeField]
-	float maxHitEffect = 0.3f;
-	[SerializeField]
-	Image healEffect;
-	[SerializeField]
-	float healEffectFade = 0.3f;
-	[SerializeField]
-	float maxHealEffect = 0.3f;
+	UIFlash healEffect;
+	//[SerializeField]
+	//float healEffectFade = 0.3f;
 
 	// Start is called before the first frame update
 	void Awake()
@@ -100,29 +97,16 @@ public class UIManager : MonoBehaviour
 
 	public void HitEffect()
 	{
-		AddImageAlpha(hitEffect, hitEffectIncrease, maxHitEffect);
+		hitEffect.Flash();
 	}
 
 	public void HealEffect()
 	{
-		AddImageAlpha(healEffect, maxHealEffect, maxHealEffect);
-	}
-
-	void AddImageAlpha(Image image, float amount, float max = 1, float min = 0)
-	{
-		Color c = image.color;
-
-		c.a += amount;
-
-		c.a = Mathf.Clamp(c.a, min, max);
-		image.color = c;
+		healEffect.Flash();
 	}
 
 	void Update()
 	{
-		//Slowly lower hit effect over time
-		AddImageAlpha(hitEffect, -hitEffectIncrease * Time.deltaTime);
-		//Slowly lower heal effect over time
-		AddImageAlpha(healEffect, -healEffectFade * Time.deltaTime);
+
 	}
 }

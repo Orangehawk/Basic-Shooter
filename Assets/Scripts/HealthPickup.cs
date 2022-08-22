@@ -2,21 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthPickup : Pickup
+public class HealthPickup : MonoBehaviour, ICollectable
 {
-	
 	[SerializeField]
 	float healAmount = 25;
 
-	//void OnTriggerEnter(Collider other)
-	//{
-	//	if (other.TryGetComponent<HealthComponent>(out HealthComponent hc))
-	//	{
-	//		if (hc.GetHealthPercent() < 100)
-	//		{
-	//			hc.Heal(healAmount);
-	//			Destroy(gameObject);
-	//		}
-	//	}
-	//}
+	public void Collect(GameObject collector)
+	{
+		if (collector.TryGetComponent(out PlayerController player))
+		{
+			if (player.Heal(healAmount))
+			{
+				Destroy(gameObject);
+			}
+		}
+	}
 }

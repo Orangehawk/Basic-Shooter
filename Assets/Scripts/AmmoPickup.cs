@@ -2,20 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AmmoPickup : Pickup
+public class AmmoPickup : MonoBehaviour, ICollectable
 {
 	[SerializeField]
 	float ammoAmount = 30;
 
-	void OnTriggerEnter(Collider other)
+	public void Collect(GameObject collector)
 	{
-		//if (other.TryGetComponent<HealthComponent>(out HealthComponent hc))
-		//{
-		//	if (hc.GetHealthPercent() < 100)
-		//	{
-		//		hc.Heal(healAmount);
-		//		Destroy(gameObject);
-		//	}
-		//}
+		if (collector.TryGetComponent(out PlayerController player))
+		{
+			player.AddAmmo(ammoAmount);
+			Destroy(gameObject);
+		}
 	}
 }

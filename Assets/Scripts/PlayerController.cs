@@ -74,6 +74,15 @@ public class PlayerController : MonoBehaviour
 		healthComponent.onHeal += OnHeal;
 	}
 
+	private void OnTriggerEnter(Collider other)
+	{
+		Debug.Log($"Hit {other.name}");
+		if(other.TryGetComponent(out ICollectable collectable))
+		{
+			collectable.Collect(gameObject);
+		}
+	}
+
 	public HealthComponent GetHealthComponent()
 	{
 		return healthComponent;
@@ -82,6 +91,16 @@ public class PlayerController : MonoBehaviour
 	public Weapon GetCurrentWeapon()
 	{
 		return weapon;
+	}
+
+	public bool Heal(float amount)
+	{
+		return healthComponent.Heal(amount);
+	}
+
+	public void AddAmmo(float amount)
+	{
+		weapon.AddAmmo(amount);
 	}
 
 	void GetInput()
