@@ -13,8 +13,6 @@ public class PlayerController : MonoBehaviour
 	Transform groundCheckPos;
 	[SerializeField]
 	Weapon weapon;
-	[SerializeField]
-	AudioSource footstepAudio;
 
 	[Header("Speed/Sensitivity")]
 	[SerializeField]
@@ -52,8 +50,6 @@ public class PlayerController : MonoBehaviour
 		{
 			instance = this;
 		}
-
-		lastPos = transform.position;
 	}
 
 	// Start is called before the first frame update
