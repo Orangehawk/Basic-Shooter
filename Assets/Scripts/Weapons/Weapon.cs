@@ -8,6 +8,10 @@ public abstract class Weapon : MonoBehaviour
 	GameObject bulletPrefab;
 	[SerializeField]
 	Transform bulletSpawnPoint;
+	[SerializeField]
+	AudioSource audioSource;
+	[SerializeField]
+	AnimationCurve audioPitchRange = AnimationCurve.Linear(0, 0.9f, 1, 1);
 
 	[SerializeField]
 	Vector3 weaponHipPosition;
@@ -88,6 +92,9 @@ public abstract class Weapon : MonoBehaviour
 			bullet.GetComponent<Bullet>().damage = damage;
 			currentAmmo--;
 			lastShot = Time.time;
+
+			audioSource.pitch = audioPitchRange.Evaluate(Random.Range(0, 1f));
+			audioSource.Play();
 		}
 	}
 
