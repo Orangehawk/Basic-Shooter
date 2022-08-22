@@ -25,6 +25,7 @@ Bugs
 
 Bonus
     Enemy HP Bar
+    Enemy Group Messages
     Enemy AI using Character controller instead of rigidbody - Done - Already is
     Enemy AI Panicking state
     Player dampened air control

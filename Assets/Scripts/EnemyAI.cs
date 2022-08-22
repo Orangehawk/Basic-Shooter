@@ -23,6 +23,10 @@ public class EnemyAI : AIPathfinder
 	Transform eyesPosition;
 	[SerializeField]
 	CharacterController characterController;
+	[SerializeField]
+	HealthBar healthBar;
+	[SerializeField]
+	FaceCamera faceCamera;
 
 	[Header("Options")]
 	[SerializeField]
@@ -121,6 +125,12 @@ public class EnemyAI : AIPathfinder
 		moveTarget = new GameObject("Move target").transform;
 
 		SetState(defaultState);
+	}
+
+	public void SetCanvasAndCamera(Canvas canvas, Camera cam)
+	{
+		healthBar.canvas = canvas;
+		faceCamera.cam = cam;
 	}
 
 	void SetState(State state)
@@ -573,5 +583,13 @@ public class EnemyAI : AIPathfinder
 		}
 
 		HandleState();
+	}
+
+	private void OnDestroy()
+	{
+		if (healthBar)
+		{
+			Destroy(healthBar.gameObject);
+		}
 	}
 }

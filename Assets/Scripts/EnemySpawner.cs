@@ -12,6 +12,8 @@ public class EnemySpawner : MonoBehaviour
 	[SerializeField]
 	Transform parent;
 	[SerializeField]
+	Canvas healthBarCanvas;
+	[SerializeField]
 	EnemyAI.State defaultState = EnemyAI.State.Idle;
 	[Tooltip("The interval between spawns, in seconds")]
 	[SerializeField]
@@ -44,12 +46,12 @@ public class EnemySpawner : MonoBehaviour
 			spawned = Instantiate(prefab, transform.position, transform.rotation);
 		}
 
-		EnemyAI ai;
-		if (spawned.TryGetComponent<EnemyAI>(out ai))
+		if (spawned.TryGetComponent<EnemyAI>(out EnemyAI ai))
 		{
 			ai.defaultState = defaultState;
+			ai.SetCanvasAndCamera(healthBarCanvas, Camera.main);
 		}
-
+		
 		lastSpawn = Time.time;
 		individualSpawns++;
 		totalSpawns++;

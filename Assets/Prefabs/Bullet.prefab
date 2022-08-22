@@ -52,7 +52,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4092646803085021306}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -131,7 +131,7 @@ MonoBehaviour:
   InitialVelocity: 20
   lifeTime: 5
   damage: 10
-  enableTrail: 1
+  enableTrail: 0
   trailMaker: {fileID: 7783412530504524316}
   particlesPrefab: {fileID: 3831295485910394033, guid: f1f38c6e2cec55544b74c77bf9cfe30a, type: 3}
 --- !u!1 &7783412530504524316
@@ -257,7 +257,7 @@ TrailRenderer:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
-    numCapVertices: 0
+    numCapVertices: 13
     alignment: 0
     textureMode: 0
     shadowBias: 0.5

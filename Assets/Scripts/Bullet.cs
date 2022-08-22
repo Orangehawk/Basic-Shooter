@@ -52,7 +52,7 @@ public class Bullet : MonoBehaviour
 				hc.Damage(damage);
 			}
 
-			Instantiate(particlesPrefab, transform.position, transform.rotation).transform.localScale = transform.localScale;
+			Instantiate(particlesPrefab, transform.position, transform.rotation);//.transform.localScale = transform.localScale;
 			Destroy(gameObject);
 		}
 		else
@@ -80,7 +80,7 @@ public class Bullet : MonoBehaviour
 	{
 		if (!isQuitting)
 		{
-			trailMaker.transform.parent = null;
+			//trailMaker.transform.parent = null;
 		}
 	}
 }
