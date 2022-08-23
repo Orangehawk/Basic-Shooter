@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAI : AIPathfinder
+public class EnemyAI : AIPathfinder, IDisplayable
 {
 	public enum State
 	{
@@ -122,8 +122,6 @@ public class EnemyAI : AIPathfinder
 	{
 		healthComponent = GetComponent<HealthComponent>();
 		characterController = GetComponent<CharacterController>();
-		moveTarget = new GameObject("Move target").transform;
-
 		SetState(defaultState);
 	}
 
@@ -259,7 +257,7 @@ public class EnemyAI : AIPathfinder
 
 	void IdleState()
 	{
-		if(!stateInitialised)
+		if (!stateInitialised)
 		{
 			generalStateTimer = Time.time;
 			stateInitialised = true;
@@ -320,7 +318,7 @@ public class EnemyAI : AIPathfinder
 		}
 	}
 
-	void GetNewMoveTarget(Vector3 centre, Vector3 maxDistance)
+	Vector3 GetNewMoveTarget(Vector3 centre, Vector3 maxDistance)
 	{
 		bool successfullyFound = false;
 
@@ -335,7 +333,7 @@ public class EnemyAI : AIPathfinder
 			}
 		}
 
-		moveTarget.position = newPos;
+		return newPos;
 	}
 
 	void PatrollingState()
@@ -351,8 +349,7 @@ public class EnemyAI : AIPathfinder
 
 		if (!stateInitialised || (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath) && Time.time >= timeReachedEndOfPath + patrolWaitAtEndOfPathTime))
 		{
-			GetNewMoveTarget(transform.position, maxPatrolDistance);
-			SetTarget(moveTarget);
+			SetTargetPosition(GetNewMoveTarget(transform.position, maxPatrolDistance));
 			atEndOfPathLastFrame = false;
 			stateInitialised = true;
 		}
@@ -591,5 +588,10 @@ public class EnemyAI : AIPathfinder
 		{
 			Destroy(healthBar.gameObject);
 		}
+	}
+
+	public string OnHover()
+	{
+		return $"Health: {healthComponent.GetHealthPercent()}";
 	}
 }

@@ -6,8 +6,10 @@ using System.Collections;
 [RequireComponent(typeof(Pathfinding.Seeker))]
 public class AIPathfinder : MonoBehaviour
 {
-	/// <summary>The object that the AI should move to</summary>
+	/// <summary>The object that the AI should move to (overwrites position when set)</summary>
 	public Transform target;
+	/// <summary>The position that the AI should move to (overwrites transform when set)</summary>
+	public Vector3? targetPosition;
 	protected Pathfinding.IAstarAI ai;
 	protected Pathfinding.AIPath aiPath;
 
@@ -36,7 +38,14 @@ public class AIPathfinder : MonoBehaviour
 
 	protected void SetTarget(Transform target)
 	{
+		this.targetPosition = null;
 		this.target = target;
+	}
+
+	protected void SetTargetPosition(Vector3 targetPosition)
+	{
+		this.target = null;
+		this.targetPosition = targetPosition;
 	}
 
 	protected void UpdateDestination()
@@ -44,6 +53,10 @@ public class AIPathfinder : MonoBehaviour
 		if (target != null && ai != null)
 		{
 			ai.destination = target.position;
+		}
+		else if (targetPosition != null && ai != null)
+		{
+			ai.destination = (Vector3)targetPosition;
 		}
 	}
 

@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
 	bool isSprinting = false;
 	bool isJumping = false;
 	bool isAiming = false;
+	bool isInteracting = false;
 	Vector3 cameraRotation = Vector3.zero;
 	Vector3 playerVelocity = Vector3.zero;
 
@@ -179,6 +180,15 @@ public class PlayerController : MonoBehaviour
 			{
 				weapon.SetAiming(false);
 			}
+
+			if(Input.GetKeyDown(KeyCode.E))
+			{
+				isInteracting = true;
+			}
+			else
+			{
+				isInteracting = false;
+			}
 		}
 	}
 
@@ -239,8 +249,12 @@ public class PlayerController : MonoBehaviour
 		{
 			target = hit.collider.gameObject;
 
-			if (hit.collider.gameObject.TryGetComponent(out HealthComponent temp))
+			if (hit.collider.gameObject.TryGetComponent(out IInteractable temp))
 			{
+				if(isInteracting)
+				{
+					temp.Interact();
+				}
 				//Debug.DrawRay(cam.transform.position, cam.transform.TransformDirection(Vector3.forward) * hit.distance, Color.red);
 			}
 			else
@@ -259,10 +273,13 @@ public class PlayerController : MonoBehaviour
 	{
 		uiManager.SetAmmoText(weapon.GetCurrentAmmo(), weapon.GetTotalAmmo());
 
-		HealthComponent h;
-		if (target && target.TryGetComponent(out h))
+		if (target && target.TryGetComponent(out IInteractable interactable))
 		{
-			uiManager.SetTargetPanelText($"Target Health: {h.GetHealthPercent()}");
+			uiManager.SetTargetPanelText($"[{"E"}] {interactable.OnHover()}");
+		}
+		else if (target && target.TryGetComponent(out IDisplayable displayable))
+		{
+			uiManager.SetTargetPanelText(displayable.OnHover());
 		}
 		else
 		{

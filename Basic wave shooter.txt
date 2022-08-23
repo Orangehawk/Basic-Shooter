@@ -11,9 +11,9 @@ Basic wave shooter
         Death when out of health - Done
         Escaping state
     HUD - WIP
-    Player Death when out of health - Done
+    Player Lose when out of health - Done
     Bullet Particles - WIP - Hits obstacles but no specific material stuff yet
-    Sounds
+    Sounds - WIP
 
 Bugs
     Change enemy collider size back to normal
@@ -23,9 +23,10 @@ Bugs
     Camera movement at higher than 60 fps - Done - changed to CharacterController
     Trails destroy on bullet OnDestroy, fix? - Done
     Adjust HitState rotation speed to be fixed rather than increase over time - Done - changed hitstate to be a magic tracking state for a few seconds instead
+    Enemy reloads (maybe just animation?) when dead
 
 Bonus
-    Enemy HP Bar
+    Enemy HP Bar - Done
     Enemy Group Messages
     Enemy AI using Character controller instead of rigidbody - Done - Already is
     Enemy AI Panicking state
@@ -37,3 +38,6 @@ Bonus
     Crouching
     FFXIV-style minibosses
     Minimap
+    Inventory System
+    Item pickup system (Press e to pickup)
+    Switchable weapons (handgun slot, rifle slot, etc)
