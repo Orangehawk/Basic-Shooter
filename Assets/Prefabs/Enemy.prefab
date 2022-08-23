@@ -527,7 +527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   footstepAudio: {fileID: 6442417537797281079}
-  distanceBetweenSteps: 2
+  distanceBetweenSteps: 3
   pitchRange:
     serializedVersion: 2
     m_Curve:

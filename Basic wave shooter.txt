@@ -14,6 +14,7 @@ Basic wave shooter
     Player Lose when out of health - Done
     Bullet Particles - WIP - Hits obstacles but no specific material stuff yet
     Sounds - WIP
+    Interactable Doors
 
 Bugs
     Change enemy collider size back to normal
@@ -32,7 +33,6 @@ Bonus
     Enemy AI Panicking state
     Player dampened air control
     Slope/Step handling - Done - Character Controller handles this
-    Interactable Doors
     Interactable-aware AI
     Security Cameras
     Crouching
@@ -41,3 +41,4 @@ Bonus
     Inventory System
     Item pickup system (Press e to pickup)
     Switchable weapons (handgun slot, rifle slot, etc)
+    Grenades
