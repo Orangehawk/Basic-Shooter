@@ -5,7 +5,7 @@ using UnityEngine;
 public class AmmoPickup : MonoBehaviour, ICollectable
 {
 	[SerializeField]
-	AudioSource audioSource;
+	AudioClip pickupSound;
 	[SerializeField]
 	float ammoAmount = 30;
 
@@ -13,7 +13,7 @@ public class AmmoPickup : MonoBehaviour, ICollectable
 	{
 		if (collector.TryGetComponent(out PlayerController player))
 		{
-			audioSource.Play();
+			player.PlayOneShot(pickupSound);
 			player.AddAmmo(ammoAmount);
 			Destroy(gameObject);
 		}

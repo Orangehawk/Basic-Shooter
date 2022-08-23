@@ -17,6 +17,14 @@ public class GameManager : MonoBehaviour
 	public static GameManager instance;
 
 	[SerializeField]
+	AudioSource audioSource;
+
+	[SerializeField]
+	AudioClip WinJingle;
+	[SerializeField]
+	AudioClip LoseJingle;
+
+	[SerializeField]
 	State initialState = State.Paused;
 
 	[Header("Debug")]
@@ -130,6 +138,7 @@ public class GameManager : MonoBehaviour
 
 	void GameWonState()
 	{
+		audioSource.PlayOneShot(WinJingle);
 		Time.timeScale = 0;
 		uiManager.SetHudLayer("GameWon");
 		Cursor.lockState = CursorLockMode.None;
@@ -137,6 +146,7 @@ public class GameManager : MonoBehaviour
 
 	void GameLostState()
 	{
+		audioSource.PlayOneShot(LoseJingle);
 		Time.timeScale = 0;
 		uiManager.SetHudLayer("GameLost");
 		Cursor.lockState = CursorLockMode.None;

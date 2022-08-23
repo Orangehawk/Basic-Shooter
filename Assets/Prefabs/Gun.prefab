@@ -105,7 +105,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 4092646803085021306, guid: e03199162d027c3429129aa83f8ff61f, type: 3}
   bulletSpawnPoint: {fileID: 8304253880202877752}
   audioSource: {fileID: 3570830203145872055}
-  audioPitchRange:
+  firePitchRange:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -129,8 +129,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  fireAudio: {fileID: 8300000, guid: 6739c01659ad96d47987f4ddee226b36, type: 3}
+  reloadAudio: {fileID: 8300000, guid: d7ef1bbc5a93b394992013f63edb79cd, type: 3}
   weaponHipPosition: {x: 0.35, y: -0.5, z: 0.843}
   weaponAimPosition: {x: 0, y: -0.35, z: 0.731}
+  reloadAngle: {x: 0, y: 0, z: -25}
   aimSpeed: 0.2
   fireRate: 11
   damage: 10

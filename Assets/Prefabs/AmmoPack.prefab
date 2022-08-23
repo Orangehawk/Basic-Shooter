@@ -61,6 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cd52c75c5b177e4fbe63a8187002160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pickupSound: {fileID: 8300000, guid: 022fdb29d3184214a97efe2f699c34c5, type: 3}
   ammoAmount: 30
 --- !u!1001 &219381487072461553
 PrefabInstance:

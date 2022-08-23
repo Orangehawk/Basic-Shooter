@@ -5,7 +5,7 @@ using UnityEngine;
 public class HealthPickup : MonoBehaviour, ICollectable
 {
 	[SerializeField]
-	AudioSource audioSource;
+	AudioClip pickupSound;
 	[SerializeField]
 	float healAmount = 25;
 
@@ -15,7 +15,7 @@ public class HealthPickup : MonoBehaviour, ICollectable
 		{
 			if (player.Heal(healAmount))
 			{
-				audioSource.Play();
+				player.PlayOneShot(pickupSound);
 				Destroy(gameObject);
 			}
 		}

@@ -11,12 +11,19 @@ public abstract class Weapon : MonoBehaviour
 	[SerializeField]
 	AudioSource audioSource;
 	[SerializeField]
-	AnimationCurve audioPitchRange = AnimationCurve.Linear(0, 0.9f, 1, 1);
+	AnimationCurve firePitchRange = AnimationCurve.Linear(0, 0.9f, 1, 1);
+
+	[SerializeField]
+	AudioClip fireAudio;
+	[SerializeField]
+	AudioClip reloadAudio;
 
 	[SerializeField]
 	Vector3 weaponHipPosition;
 	[SerializeField]
 	Vector3 weaponAimPosition;
+	[SerializeField]
+	Vector3 reloadAngle = new Vector3(0, 0, -25);
 
 	[SerializeField]
 	float aimSpeed = 0.2f;
@@ -43,7 +50,9 @@ public abstract class Weapon : MonoBehaviour
 	float lastShot = 0;
 	float timeBetweenShots = 0;
 	bool isAiming = false;
-	Vector3 weaponVelocity = Vector3.zero;
+	Vector3 aimVelocity = Vector3.zero;
+	//Vector3 reloadAngleVelocity = Vector3.zero;
+	float reloadAngleVelocity = 0;
 
 	// Start is called before the first frame update
 	protected virtual void Start()
@@ -70,17 +79,36 @@ public abstract class Weapon : MonoBehaviour
 	{
 		if (isAiming)
 		{
-			transform.localPosition = Vector3.SmoothDamp(transform.localPosition, weaponAimPosition, ref weaponVelocity, aimSpeed);
+			transform.localPosition = Vector3.SmoothDamp(transform.localPosition, weaponAimPosition, ref aimVelocity, aimSpeed);
 		}
 		else
 		{
-			transform.localPosition = Vector3.SmoothDamp(transform.localPosition, weaponHipPosition, ref weaponVelocity, aimSpeed);
+			transform.localPosition = Vector3.SmoothDamp(transform.localPosition, weaponHipPosition, ref aimVelocity, aimSpeed);
+		}
+	}
+
+	void HandleReloadAngle()
+	{
+		if (isReloading)
+		{
+			transform.localRotation = Quaternion.Euler(0, 0, Mathf.SmoothDampAngle(transform.localRotation.eulerAngles.z, reloadAngle.z, ref reloadAngleVelocity, aimSpeed));
+		}
+		else
+		{
+			transform.localRotation = Quaternion.Euler(0, 0, Mathf.SmoothDampAngle(transform.localRotation.eulerAngles.z, 0, ref reloadAngleVelocity, aimSpeed));
 		}
 	}
 
 	public void SetAiming(bool aiming)
 	{
-		isAiming = aiming;
+		if (!isReloading)
+		{
+			isAiming = aiming;
+		}
+		else
+		{
+			isAiming = false;
+		}
 	}
 
 	public void Fire()
@@ -93,8 +121,8 @@ public abstract class Weapon : MonoBehaviour
 			currentAmmo--;
 			lastShot = Time.time;
 
-			audioSource.pitch = audioPitchRange.Evaluate(Random.Range(0, 1f));
-			audioSource.Play();
+			audioSource.pitch = firePitchRange.Evaluate(Random.Range(0, 1f));
+			audioSource.PlayOneShot(fireAudio);
 		}
 	}
 
@@ -102,6 +130,8 @@ public abstract class Weapon : MonoBehaviour
 	{
 		if ((!isReloading && currentAmmo < magazineSize) || infiniteAmmo)
 		{
+			audioSource.pitch = 1;
+			audioSource.PlayOneShot(reloadAudio);
 			StartCoroutine(ReloadCoroutine());
 		}
 	}
@@ -147,5 +177,6 @@ public abstract class Weapon : MonoBehaviour
 	protected virtual void Update()
 	{
 		HandleAiming();
+		HandleReloadAngle();
 	}
 }

@@ -12,7 +12,8 @@ Basic wave shooter
         Escaping state
     HUD - WIP
     Player Death when out of health - Done
-    Bullet Particles
+    Bullet Particles - WIP - Hits obstacles but no specific material stuff yet
+    Sounds
 
 Bugs
     Change enemy collider size back to normal
@@ -35,3 +36,4 @@ Bonus
     Security Cameras
     Crouching
     FFXIV-style minibosses
+    Minimap
