@@ -8,16 +8,16 @@ public class Button : MonoBehaviour, IInteractable, IDisplayable
 	GameObject interactableObject;
 
 	Animator animator;
-	IInteractable interaction;
+	IControllableSystem controllableSystem;
 
 	// Start is called before the first frame update
 	void Start()
 	{
 		animator = GetComponent<Animator>();
 
-		interaction = interactableObject.GetComponent<IInteractable>();
+		controllableSystem = interactableObject.GetComponent<IControllableSystem>();
 
-		if(interaction == null)
+		if(controllableSystem == null)
 		{
 			Debug.LogError($"Failed to find interaction on {interactableObject.name}, destroying this {name}");
 			Destroy(this);
@@ -27,12 +27,12 @@ public class Button : MonoBehaviour, IInteractable, IDisplayable
 	public void Interact()
 	{
 		animator.Play("Press");
-		interaction.Interact();
+		controllableSystem.Action();
 	}
 
 	public string OnHover()
 	{
-		return interaction.OnHover();
+		return controllableSystem.DisplayText();
 	}
 
 

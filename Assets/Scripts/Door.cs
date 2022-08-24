@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Door : MonoBehaviour, IInteractable
+public class Door : MonoBehaviour, IControllableSystem
 {
 	Animator animator;
 	bool isOpen = false;
@@ -14,7 +14,7 @@ public class Door : MonoBehaviour, IInteractable
 
 	}
 
-	public void Interact()
+	public void Action()
 	{
 		Debug.Log(animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
 		if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
@@ -32,7 +32,7 @@ public class Door : MonoBehaviour, IInteractable
 		}
 	}
 
-	public string OnHover()
+	public string DisplayText()
 	{
 		return $"{(isOpen ? "Close" : "Open")} Door";
 	}
