@@ -144,6 +144,10 @@ MonoBehaviour:
   discardMagazine: 0
   totalAmmo: 120
   infiniteAmmo: 0
+  hipHorizontalRecoil: -0.2
+  hipVerticalRecoil: -0.5
+  aimHorizontalRecoil: 0
+  aimVerticalRecoil: -0.2
 --- !u!65 &8067552959724107331
 BoxCollider:
   m_ObjectHideFlags: 0

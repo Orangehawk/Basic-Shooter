@@ -42,4 +42,4 @@ Bonus
     Item pickup system (Press e to pickup)
     Switchable weapons (handgun slot, rifle slot, etc)
     Grenades
-    Recoil
+    Basic Recoil - Done

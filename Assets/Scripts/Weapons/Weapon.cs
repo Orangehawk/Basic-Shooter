@@ -45,6 +45,14 @@ public abstract class Weapon : MonoBehaviour
 	float totalAmmo = 120;
 	[SerializeField]
 	bool infiniteAmmo = false;
+	[SerializeField]
+	float hipHorizontalRecoil = 0;
+	[SerializeField]
+	float hipVerticalRecoil = 0;
+	[SerializeField]
+	float aimHorizontalRecoil = 0;
+	[SerializeField]
+	float aimVerticalRecoil = 0;
 
 	bool isReloading = false;
 	float lastShot = 0;
@@ -54,10 +62,19 @@ public abstract class Weapon : MonoBehaviour
 	//Vector3 reloadAngleVelocity = Vector3.zero;
 	float reloadAngleVelocity = 0;
 
+	bool heldByPlayer = false;
+	PlayerController player;
+
 	// Start is called before the first frame update
 	protected virtual void Start()
 	{
 		timeBetweenShots = 1f / fireRate;
+	}
+
+	public void SetHeldByPlayer()
+	{
+		heldByPlayer = true;
+		player = PlayerController.instance;
 	}
 
 	public void AddAmmo(float amount)
@@ -123,6 +140,18 @@ public abstract class Weapon : MonoBehaviour
 
 			audioSource.pitch = firePitchRange.Evaluate(Random.Range(0, 1f));
 			audioSource.PlayOneShot(fireAudio);
+
+			if(player)
+			{
+				if(isAiming)
+				{
+					player.ForceRotate(aimHorizontalRecoil, aimVerticalRecoil);
+				}
+				else
+				{
+					player.ForceRotate(hipHorizontalRecoil, hipVerticalRecoil);
+				}
+			}
 		}
 	}
 

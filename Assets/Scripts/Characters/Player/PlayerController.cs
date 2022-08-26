@@ -64,6 +64,11 @@ public class PlayerController : MonoBehaviour
 		gameManager = GameManager.instance;
 		uiManager = UIManager.instance;
 
+		if(weapon)
+		{
+			weapon.SetHeldByPlayer();
+		}
+
 		cameraRotation = cam.transform.localRotation.eulerAngles;
 
 		healthComponent.onDamage += OnHit;
@@ -82,6 +87,17 @@ public class PlayerController : MonoBehaviour
 	public void PlayOneShot(AudioClip clip)
 	{
 		audioSource.PlayOneShot(clip);
+	}
+
+	public void ForceRotate(float horizontal, float vertical)
+	{
+		transform.Rotate(0, horizontal, 0);
+
+		cameraRotation.x += vertical;
+
+		cameraRotation.x = Mathf.Clamp(cameraRotation.x, -90, 90);
+
+		cam.transform.localRotation = Quaternion.Euler(cameraRotation);
 	}
 
 	public HealthComponent GetHealthComponent()

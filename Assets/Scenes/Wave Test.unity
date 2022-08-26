@@ -1527,7 +1527,7 @@ MonoBehaviour:
   defaultState: 2
   interval: 7
   maxIndividualSpawns: 10
-  maxTotalSpawns: 10
+  maxTotalSpawns: 1
 --- !u!4 &298668638
 Transform:
   m_ObjectHideFlags: 0
@@ -2820,7 +2820,7 @@ MonoBehaviour:
   defaultState: 2
   interval: 7
   maxIndividualSpawns: 10
-  maxTotalSpawns: 10
+  maxTotalSpawns: 1
 --- !u!4 &734133283
 Transform:
   m_ObjectHideFlags: 0
@@ -5488,7 +5488,7 @@ MonoBehaviour:
   defaultState: 2
   interval: 7
   maxIndividualSpawns: 10
-  maxTotalSpawns: 10
+  maxTotalSpawns: 1
 --- !u!4 &1511595080
 Transform:
   m_ObjectHideFlags: 0
@@ -8825,6 +8825,14 @@ PrefabInstance:
     - target: {fileID: 5426927795742918948, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426927796042552640, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
+      propertyPath: verticalRecoil
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426927796042552640, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
+      propertyPath: horizontalRecoil
+      value: -0.05
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ab0921f46cddd241a715e0551ee1dd9, type: 3}
