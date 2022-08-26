@@ -6,4 +6,5 @@ public interface IControllableSystem
 {
     public void Action();
     public string DisplayText();
+    public string GetState();
 }

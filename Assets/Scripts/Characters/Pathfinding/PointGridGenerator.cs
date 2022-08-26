@@ -26,9 +26,9 @@ public class PointGridGenerator : MonoBehaviour
             {
                 Vector3 pos = new Vector3(i, maxPos.y, j);
 
-                int layerMask = LayerMask.GetMask("Ground");
+                int layerMask = LayerMask.GetMask("Obstacles");
 
-                if (!Physics.CheckBox(pos, halfExtents, Quaternion.identity, ~layerMask))
+                if (!Physics.CheckBox(pos, halfExtents, Quaternion.identity, layerMask))
                 {
                     Instantiate(node, pos, Quaternion.identity, nodeParent.transform);
                 }

@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3748565938879817325}
   - component: {fileID: 3078261639000306742}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Door_Right
-  m_TagString: Crusher
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -55,9 +55,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6956547425333160060}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorArmature
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,9 +87,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 71071492226899970}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Door_Left_end
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,11 +120,12 @@ GameObject:
   - component: {fileID: 3256832450706358674}
   - component: {fileID: 3078261638959998581}
   - component: {fileID: 3078261638959998578}
+  - component: {fileID: 2946620368292594605}
   - component: {fileID: 3078261638959998580}
   - component: {fileID: 3078261638959998583}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Door
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,7 +139,7 @@ Transform:
   m_GameObject: {fileID: 2772325623658519336}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -2.89, y: 2, z: 6.35}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 2, y: 2, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5644615854373535958}
@@ -174,6 +175,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 2, z: 1}
   m_Center: {x: 1.5, y: 0, z: 0}
+--- !u!65 &2946620368292594605
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2772325623658519336}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4, y: 2, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &3078261638959998580
 Animator:
   serializedVersion: 4
@@ -216,9 +230,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5644615854373535958}
   - component: {fileID: 4591741201463607067}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Door
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -303,9 +317,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1634152504535890119}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Root
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -336,9 +350,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268822504444674296}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Door_Right_end
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -368,9 +382,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5565963142252313313}
   - component: {fileID: 3078261638646127304}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Door_Left
-  m_TagString: Crusher
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -411,6 +425,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3256832450706358674}
     m_Modifications:
+    - target: {fileID: 1196865253494359627, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495854750032560496, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3428803354100980744, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4432612392243027182, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7242629781393097567, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8553181882963369119, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -471,6 +505,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Button (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 9077235085331580453, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9077235085331580453, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
 --- !u!1 &6287306078756597095 stripped
@@ -503,6 +545,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3256832450706358674}
     m_Modifications:
+    - target: {fileID: 1196865253494359627, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495854750032560496, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3428803354100980744, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4432612392243027182, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7242629781393097567, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8553181882963369119, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -562,6 +624,14 @@ PrefabInstance:
     - target: {fileID: 9077235085331580453, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
       propertyPath: m_Name
       value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 9077235085331580453, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9077235085331580453, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4c5f1035059e5c4aae2a32dcfb5fe3a, type: 3}

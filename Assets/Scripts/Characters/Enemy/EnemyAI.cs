@@ -135,7 +135,7 @@ public class EnemyAI : AIPathfinder, IDisplayable
 	{
 		if (currentState != state)
 		{
-			Debug.Log($"{gameObject.name} entered state \"{state}\"");
+			//Debug.Log($"{gameObject.name} entered state \"{state}\"");
 			currentState = state;
 			stateInitialised = false;
 			lastStateChange = Time.time;
@@ -509,6 +509,10 @@ public class EnemyAI : AIPathfinder, IDisplayable
 						SetState(State.Escaping);
 					}
 				}
+			}
+			else
+			{
+				Debug.Log($"Collided {collision.gameObject.name}");
 			}
 		}
 	}
