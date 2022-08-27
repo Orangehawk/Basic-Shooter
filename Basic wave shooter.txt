@@ -43,3 +43,5 @@ Bonus
     Switchable weapons (handgun slot, rifle slot, etc)
     Grenades
     Basic Recoil - Done
+    Smooth Recoil
+    Recoil Auto-Recentre
