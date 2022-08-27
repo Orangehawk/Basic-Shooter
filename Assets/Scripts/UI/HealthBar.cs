@@ -16,7 +16,14 @@ public class HealthBar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.SetParent(canvas.transform);
+        if (canvas)
+        {
+            transform.SetParent(canvas.transform);
+        }
+        else
+		{
+            Debug.LogError($"Canvas not assigned for HealthBar in {name}");
+        }
     }
 
     // Update is called once per frame

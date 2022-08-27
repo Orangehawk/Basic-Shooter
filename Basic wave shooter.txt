@@ -14,7 +14,7 @@ Basic wave shooter
     Player Lose when out of health - Done
     Bullet Particles - WIP - Hits obstacles but no specific material stuff yet
     Sounds - WIP
-    Interactable Doors
+    Interactable Doors - Basic Done
 
 Bugs
     Change enemy collider size back to normal
@@ -28,7 +28,7 @@ Bugs
 
 Bonus
     Enemy HP Bar - Done
-    Enemy Group Messages
+    Basic Enemy Group Messages - Done
     Enemy AI using Character controller instead of rigidbody - Done - Already is
     Enemy AI Panicking state
     Player dampened air control
@@ -37,11 +37,14 @@ Bonus
     Security Cameras
     Crouching
     FFXIV-style minibosses
-    Minimap
+    Minimap - Done
     Inventory System
     Item pickup system (Press e to pickup)
     Switchable weapons (handgun slot, rifle slot, etc)
     Grenades
+    Hiding from Grenades
     Basic Recoil - Done
     Smooth Recoil
     Recoil Auto-Recentre
+    Enemies on Minimap
+    Minimap zoom

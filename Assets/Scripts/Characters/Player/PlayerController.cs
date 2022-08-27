@@ -12,9 +12,13 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	Transform groundCheckPos;
 	[SerializeField]
+	Transform grenadePos;
+	[SerializeField]
 	Weapon weapon;
 	[SerializeField]
 	AudioSource audioSource;
+	[SerializeField]
+	GameObject grenade;
 
 	[Header("Speed/Sensitivity")]
 	[SerializeField]
@@ -25,6 +29,9 @@ public class PlayerController : MonoBehaviour
 	float sprintSpeed = 8;
 	[SerializeField]
 	float jumpHeight = 3;
+
+	[SerializeField]
+	uint grenades = 3;
 	
 	CharacterController characterController;
 	HealthComponent healthComponent;
@@ -120,6 +127,15 @@ public class PlayerController : MonoBehaviour
 		weapon.AddAmmo(amount);
 	}
 
+	void ThrowGrenade()
+	{
+		if (grenades > 0)
+		{
+			Instantiate(grenade, grenadePos.position, transform.rotation);
+			grenades--;
+		}
+	}
+
 	void GetInput()
 	{
 		if (Input.GetKeyDown(KeyCode.P))
@@ -204,6 +220,11 @@ public class PlayerController : MonoBehaviour
 			else
 			{
 				isInteracting = false;
+			}
+
+			if (Input.GetKeyDown(KeyCode.G))
+			{
+				ThrowGrenade();
 			}
 		}
 	}

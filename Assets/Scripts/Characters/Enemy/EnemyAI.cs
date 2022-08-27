@@ -135,7 +135,7 @@ public class EnemyAI : AIPathfinder, IDisplayable
 	{
 		if (currentState != state)
 		{
-			//Debug.Log($"{gameObject.name} entered state \"{state}\"");
+			Debug.Log($"{gameObject.name} entered state \"{state}\"");
 			currentState = state;
 			stateInitialised = false;
 			lastStateChange = Time.time;
@@ -426,13 +426,13 @@ public class EnemyAI : AIPathfinder, IDisplayable
 			}
 		}
 
-		if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath) && Time.time >= timeReachedEndOfPath + searchWaitAtEndOfPathTime)
+		if (!stateInitialised || (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath) && Time.time >= timeReachedEndOfPath + searchWaitAtEndOfPathTime))
 		{
-			GetNewMoveTarget(lastTargetLocation, maxSearchDistance);
-			SetTarget(moveTarget);
+			SetTargetPosition(GetNewMoveTarget(lastTargetLocation, maxSearchDistance));
 			UpdateDestination();
 			ai.SearchPath();
 			atEndOfPathLastFrame = false;
+			stateInitialised = true;
 		}
 	}
 
@@ -489,6 +489,48 @@ public class EnemyAI : AIPathfinder, IDisplayable
 		}
 	}
 
+	public void RecieveMessage(Transform target)
+	{
+		Debug.Log($"{name} Recieved message");
+		if (GetTarget() == null)
+		{
+			Debug.Log($"Target null");
+			lastTargetLocation = target.position;
+			aiPath.enableRotation = true;
+			aiPath.slowdownDistance = defaultSlowdownDistance;
+			aiPath.endReachedDistance = defaultEndReachedDistance;
+
+			if (WeaponReady())
+			{
+				Debug.Log($"{name} Searching");
+				SetState(State.Searching);
+			}
+			else
+			{
+				Debug.Log($"{name} Escaping");
+				SetState(State.Escaping);
+			}
+		}
+		else
+		{
+			Debug.Log($"{name} Target not null");
+		}
+	}
+
+	void GroupMessage(Transform target)
+	{
+		Collider[] hits = Physics.OverlapSphere(transform.position, 20);
+
+		foreach(Collider hit in hits)
+		{
+			if (hit.GetType() != typeof(CharacterController) && hit.gameObject.TryGetComponent(out EnemyAI enemy) && enemy != this)
+			{
+				Debug.Log($"{name} Sent message");
+				enemy.RecieveMessage(target);
+			}
+		}
+	}
+
 	void OnCollisionEnter(Collision collision)
 	{
 		if (GetState() != State.Dead)
@@ -496,9 +538,10 @@ public class EnemyAI : AIPathfinder, IDisplayable
 			//Handle state after being hit by a bullet
 			if (collision.collider.CompareTag("Projectile"))
 			{
-				if (GetState() != State.Fighting && GetState() != State.Escaping)
+				if (GetState() != State.Fighting && GetState() != State.Hit && GetState() != State.Escaping)
 				{
 					SetTarget(PlayerController.instance.transform);
+					GroupMessage(GetTarget());
 
 					if (WeaponReady())
 					{

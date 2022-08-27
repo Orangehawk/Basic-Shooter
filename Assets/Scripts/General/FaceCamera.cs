@@ -9,12 +9,18 @@ public class FaceCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        if(!cam)
+		{
+            Debug.LogError($"Camera not assigned for FaceCamera in {name}");
+		}
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.LookAt(cam.transform, Vector3.up);
+        if (cam)
+        {
+            transform.LookAt(cam.transform, Vector3.up);
+        }
     }
 }
