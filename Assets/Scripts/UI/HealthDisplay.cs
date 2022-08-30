@@ -29,7 +29,7 @@ public class HealthDisplay : MonoBehaviour
 	{
 		if (healthComponent)
 		{
-			textPanel.SetText($"{prefix}: {healthComponent.GetHealthPercent()}%");
+			textPanel.SetText($"{prefix}: {Mathf.Round(healthComponent.GetHealthPercent())}%");
 			if (healthComponent.IsDead())
 			{
 				textPanel.SetBackgroundColor(Color.red);

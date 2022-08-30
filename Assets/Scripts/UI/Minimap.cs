@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Minimap : MonoBehaviour
 {
+    public static Minimap instance;
+
     [SerializeField]
     Transform player;
     [SerializeField]
@@ -15,14 +17,32 @@ public class Minimap : MonoBehaviour
     float xScale, yScale;
     float lastRotation;
 
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Debug.LogWarning("Duplicate Minimap!");
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        xScale = map.sizeDelta.x / 100f;
-        yScale = map.sizeDelta.y / 100f;
+        xScale = map.rect.width / 100f;
+        yScale = map.rect.height / 100f;
         lastRotation = player.rotation.eulerAngles.y;
         playerMarker.localRotation = Quaternion.Euler(0, 0, lastRotation + 180);
     }
+
+    public RectTransform GetMap()
+	{
+        return map;
+	}
 
     // Update is called once per frame
     void Update()

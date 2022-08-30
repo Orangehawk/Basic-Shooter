@@ -12,6 +12,8 @@ public class Grenade : MonoBehaviour
 	[SerializeField]
 	float damage = 40;
 	[SerializeField]
+	AnimationCurve damageCurve;
+	[SerializeField]
 	float initialVelocity = 3;
 	[SerializeField]
 	bool explodeOnHit = false;
@@ -51,7 +53,13 @@ public class Grenade : MonoBehaviour
 			Debug.Log(hit.GetType());
 			if (hit.GetType() != typeof(CharacterController) && hit.gameObject.TryGetComponent(out HealthComponent hc))
 			{
-				hc.Damage(damage);
+				if(Physics.Linecast(transform.position, hit.transform.position, out RaycastHit info))
+				{
+					if(info.collider == hit)
+					{
+						hc.Damage(damage * damageCurve.Evaluate(1f - (info.distance / explosionRadius)));
+					}
+				}
 			}
 		}
 

@@ -15,6 +15,7 @@ Basic wave shooter
     Bullet Particles - WIP - Hits obstacles but no specific material stuff yet
     Sounds - WIP
     Interactable Doors - Basic Done
+    Switch some raycasts to linecasts
 
 Bugs
     Change enemy collider size back to normal
@@ -25,6 +26,8 @@ Bugs
     Trails destroy on bullet OnDestroy, fix? - Done
     Adjust HitState rotation speed to be fixed rather than increase over time - Done - changed hitstate to be a magic tracking state for a few seconds instead
     Enemy reloads (maybe just animation?) when dead
+    Minimap markers disappearing when enemy killed
+    Grenade doesn't trigger enemy detection
 
 Bonus
     Enemy HP Bar - Done
@@ -41,8 +44,9 @@ Bonus
     Inventory System
     Item pickup system (Press e to pickup)
     Switchable weapons (handgun slot, rifle slot, etc)
-    Grenades
-    Hiding from Grenades
+    Grenades - Done
+    Hiding from Grenades - Done
+    Distance based damage for grenades - Done
     Basic Recoil - Done
     Smooth Recoil
     Recoil Auto-Recentre
