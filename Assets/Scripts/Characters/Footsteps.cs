@@ -13,6 +13,7 @@ public class Footsteps : MonoBehaviour
 
 	Vector3 lastPos = Vector3.zero;
 	float footstepDistance = 0;
+	bool isGrounded = false;
 
 	void Awake()
 	{
@@ -25,16 +26,24 @@ public class Footsteps : MonoBehaviour
 
 	}
 
+	public void SetIsGrounded(bool grounded)
+	{
+		this.isGrounded = grounded;
+	}
+
 	void HandleFootsteps()
 	{
-		footstepDistance += Vector3.Distance(transform.position, lastPos);
-		lastPos = transform.position;
-
-		if (footstepDistance >= distanceBetweenSteps)
+		if (isGrounded)
 		{
-			footstepAudio.pitch = pitchRange.Evaluate(Random.Range(0, 1f));
-			footstepAudio.Play();
-			footstepDistance = 0;
+			footstepDistance += Vector3.Distance(transform.position, lastPos);
+			lastPos = transform.position;
+
+			if (footstepDistance >= distanceBetweenSteps)
+			{
+				footstepAudio.pitch = pitchRange.Evaluate(Random.Range(0, 1f));
+				footstepAudio.Play();
+				footstepDistance = 0;
+			}
 		}
 	}
 

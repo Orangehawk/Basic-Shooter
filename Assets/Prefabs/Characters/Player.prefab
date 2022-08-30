@@ -528,6 +528,7 @@ MonoBehaviour:
   weapon: {fileID: 5426927796042552640}
   audioSource: {fileID: 1556212327}
   grenade: {fileID: 2766007475428367538, guid: 0fe1963be14ecaa4695b58e5614322b7, type: 3}
+  footsteps: {fileID: 2193708609750643829}
   mouseSensitivity: {x: 2, y: 2}
   walkSpeed: 5
   sprintSpeed: 9

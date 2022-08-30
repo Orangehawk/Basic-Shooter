@@ -535,7 +535,7 @@ public class EnemyAI : AIPathfinder, IDisplayable, IDamageable
 
 	void OnHit()
 	{
-		if (GetState() != State.Fighting && GetState() != State.Hit && GetState() != State.Escaping)
+		if (GetState() != State.Fighting && GetState() != State.Hit && GetState() != State.Escaping && GetState() != State.Dead)
 		{
 			SetTarget(PlayerController.instance.transform);
 			GroupMessage(GetTarget());

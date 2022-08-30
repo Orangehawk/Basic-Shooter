@@ -17,7 +17,7 @@ Basic wave shooter
     Interactable Doors - Basic Done
     Switch some raycasts to linecasts - Done
     Create and implement IDamageable for HC, swap all damage sources to using that instead of HealthComponent - Done
-    Move enemy damage sensing to OnDamage instead of checking for projectile
+    Move enemy damage sensing to OnDamage instead of checking for projectile - Done
 
 Bugs
     Change enemy collider size back to normal
@@ -28,8 +28,9 @@ Bugs
     Trails destroy on bullet OnDestroy, fix? - Done
     Adjust HitState rotation speed to be fixed rather than increase over time - Done - changed hitstate to be a magic tracking state for a few seconds instead
     Enemy reloads (maybe just animation?) when dead
-    Minimap markers disappearing when enemy killed
-    Grenade doesn't trigger enemy detection
+    Minimap markers not disappearing when enemy killed - Done
+    Grenade doesn't trigger enemy detection - Done
+    Player footsteps in air - Done
 
 Bonus
     Enemy HP Bar - Done

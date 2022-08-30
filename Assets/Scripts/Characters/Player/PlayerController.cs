@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 	AudioSource audioSource;
 	[SerializeField]
 	GameObject grenade;
+	[SerializeField]
+	Footsteps footsteps;
 
 	[Header("Speed/Sensitivity")]
 	[SerializeField]
@@ -84,7 +86,6 @@ public class PlayerController : MonoBehaviour, IDamageable
 
 	private void OnTriggerEnter(Collider other)
 	{
-		Debug.Log($"Hit {other.name}");
 		if(other.TryGetComponent(out ICollectable collectable))
 		{
 			collectable.Collect(gameObject);
@@ -272,6 +273,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
 		playerVelocity.y += -Physics.gravity.magnitude * Time.deltaTime;
 		characterController.Move(playerVelocity * Time.deltaTime);
+
+		footsteps.SetIsGrounded(IsGrounded());
 	}
 
 	void HandleRotation()
