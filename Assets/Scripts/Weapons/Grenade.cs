@@ -50,13 +50,13 @@ public class Grenade : MonoBehaviour
 
 		foreach (Collider hit in hits)
 		{
-			if (hit.GetType() != typeof(CharacterController) && hit.gameObject.TryGetComponent(out HealthComponent hc))
+			if (hit.GetType() != typeof(CharacterController) && hit.gameObject.TryGetComponent(out IDamageable damageable))
 			{
 				if(Physics.Linecast(transform.position, hit.transform.position, out RaycastHit info))
 				{
 					if(info.collider == hit)
 					{
-						hc.Damage(damage * damageCurve.Evaluate(1f - (info.distance / explosionRadius)));
+						damageable.Damage(damage * damageCurve.Evaluate(1f - (info.distance / explosionRadius)));
 					}
 				}
 			}

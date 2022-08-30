@@ -46,10 +46,9 @@ public class Bullet : MonoBehaviour
 		{
 			//Debug.Log($"Hit {collision.gameObject.name}");
 
-			HealthComponent hc;
-			if (collision.gameObject.TryGetComponent(out hc))
+			if (collision.gameObject.TryGetComponent(out IDamageable damageable))
 			{
-				hc.Damage(damage);
+				damageable.Damage(damage);
 			}
 
 			if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
@@ -58,10 +57,6 @@ public class Bullet : MonoBehaviour
 				o.transform.forward = collision.GetContact(0).normal;
 			}
 			Destroy(gameObject);
-		}
-		else
-		{
-			//Debug.Log($"Hit {collision.gameObject.name} - no HC");
 		}
 	}
 

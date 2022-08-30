@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(HealthComponent))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
 	public static PlayerController instance;
 
@@ -115,11 +115,6 @@ public class PlayerController : MonoBehaviour
 	public Weapon GetCurrentWeapon()
 	{
 		return weapon;
-	}
-
-	public bool Heal(float amount)
-	{
-		return healthComponent.Heal(amount);
 	}
 
 	public void AddAmmo(float amount)
@@ -368,5 +363,20 @@ public class PlayerController : MonoBehaviour
 		{
 			gameManager.SetState(GameManager.State.GameLost);
 		}
+	}
+
+	public void Damage(float amount)
+	{
+		healthComponent.Damage(amount);
+	}
+
+	public bool Heal(float amount)
+	{
+		return healthComponent.Heal(amount);
+	}
+
+	public void Kill()
+	{
+		healthComponent.Kill();
 	}
 }

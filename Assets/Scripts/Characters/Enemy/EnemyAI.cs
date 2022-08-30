@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAI : AIPathfinder, IDisplayable
+public class EnemyAI : AIPathfinder, IDisplayable, IDamageable
 {
 	public enum State
 	{
@@ -123,6 +123,8 @@ public class EnemyAI : AIPathfinder, IDisplayable
 		healthComponent = GetComponent<HealthComponent>();
 		characterController = GetComponent<CharacterController>();
 		SetState(defaultState);
+
+		healthComponent.onDamage += OnHit;
 	}
 
 	public void SetCanvasAndCamera(Canvas canvas, Camera cam)
@@ -531,31 +533,20 @@ public class EnemyAI : AIPathfinder, IDisplayable
 		}
 	}
 
-	void OnCollisionEnter(Collision collision)
+	void OnHit()
 	{
-		if (GetState() != State.Dead)
+		if (GetState() != State.Fighting && GetState() != State.Hit && GetState() != State.Escaping)
 		{
-			//Handle state after being hit by a bullet
-			if (collision.collider.CompareTag("Projectile"))
-			{
-				if (GetState() != State.Fighting && GetState() != State.Hit && GetState() != State.Escaping)
-				{
-					SetTarget(PlayerController.instance.transform);
-					GroupMessage(GetTarget());
+			SetTarget(PlayerController.instance.transform);
+			GroupMessage(GetTarget());
 
-					if (WeaponReady())
-					{
-						SetState(State.Hit);
-					}
-					else
-					{
-						SetState(State.Escaping);
-					}
-				}
+			if (WeaponReady())
+			{
+				SetState(State.Hit);
 			}
 			else
 			{
-				Debug.Log($"Collided {collision.gameObject.name}");
+				SetState(State.Escaping);
 			}
 		}
 	}
@@ -566,8 +557,7 @@ public class EnemyAI : AIPathfinder, IDisplayable
 		{
 			if (other.CompareTag("Player"))
 			{
-				RaycastHit hit;
-				if (InFieldOfVision(other.transform) && Physics.Raycast(eyesPosition.position, other.transform.position - transform.position, out hit, 250, ~LayerMask.GetMask("Projectiles")))
+				if (InFieldOfVision(other.transform) && Physics.Linecast(eyesPosition.position, other.transform.position, out RaycastHit hit, ~LayerMask.GetMask("Projectiles")))
 				{
 					if (hit.collider.CompareTag("Player"))
 					{
@@ -640,5 +630,20 @@ public class EnemyAI : AIPathfinder, IDisplayable
 	public string OnHover()
 	{
 		return $"Health: {Mathf.Round(healthComponent.GetHealthPercent())}";
+	}
+
+	public void Damage(float amount)
+	{
+		healthComponent.Damage(amount);
+	}
+
+	public bool Heal(float amount)
+	{
+		return healthComponent.Heal(amount);
+	}
+
+	public void Kill()
+	{
+		healthComponent.Kill();
 	}
 }

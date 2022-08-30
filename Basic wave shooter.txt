@@ -15,8 +15,8 @@ Basic wave shooter
     Bullet Particles - WIP - Hits obstacles but no specific material stuff yet
     Sounds - WIP
     Interactable Doors - Basic Done
-    Switch some raycasts to linecasts
-    Create and implement IDamageable for HC, swap all damage sources to using that instead of HealthComponent
+    Switch some raycasts to linecasts - Done
+    Create and implement IDamageable for HC, swap all damage sources to using that instead of HealthComponent - Done
     Move enemy damage sensing to OnDamage instead of checking for projectile
 
 Bugs

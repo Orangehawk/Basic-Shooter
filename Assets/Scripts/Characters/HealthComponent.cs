@@ -65,6 +65,12 @@ public class HealthComponent : MonoBehaviour
         onDamage();
     }
 
+    public void Kill()
+	{
+        health = 0;
+        onDead();
+	}
+
     public bool IsDead()
 	{
         if(health == 0)
