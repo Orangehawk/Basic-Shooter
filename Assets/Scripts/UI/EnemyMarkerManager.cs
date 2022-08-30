@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,21 +8,20 @@ public class EnemyMarkerManager : MonoBehaviour
 {
     [SerializeField]
     GameObject enemyMarker;
-    
+
     RectTransform map;
     Dictionary<Transform, RectTransform> minimapMarkers; //<Enemy, EnemyMarker>
-    float xScale, yScale;
+    Vector2 mapScale;
 
     // Start is called before the first frame update
     void Start()
     {
-        map = Minimap.instance.GetMap();
         minimapMarkers = new Dictionary<Transform, RectTransform>();
 
-        //xScale = minimap.sizeDelta.x / 100f;
-        //yScale = minimap.sizeDelta.y / 100f;
-        xScale = map.rect.width / 100f;
-        yScale = map.rect.height / 100f;
+        map = Minimap.instance.GetMap();
+        mapScale = Minimap.instance.GetMapScale();
+
+        Minimap.instance.onZoom += UpdateScale;
     }
 
 	void OnTriggerEnter(Collider other)
@@ -30,10 +30,6 @@ public class EnemyMarkerManager : MonoBehaviour
 		{
             AddMarker(other.transform);
 		}
-        else
-		{
-            Debug.Log($"Hit but not adding {other.name} to minimap | {other.GetType()}");
-        }
     }
 
 	void OnTriggerExit(Collider other)
@@ -42,18 +38,17 @@ public class EnemyMarkerManager : MonoBehaviour
         {
             RemoveMarker(other.transform);
         }
-        else
-        {
-            Debug.Log($"Lost but not removing {other.name} from minimap | {other.GetType()}");
-        }
     }
 
 	public void AddMarker(Transform enemy)
 	{
         if(!minimapMarkers.ContainsKey(enemy))
 		{
-            Debug.Log($"Adding {enemy.name} to minimap");
             minimapMarkers.Add(enemy, Instantiate(enemyMarker, new Vector3(-enemy.position.x, -enemy.position.z, 0), Quaternion.identity, map).GetComponent<RectTransform>());
+            if(enemy.TryGetComponent(out HealthComponent hc))
+			{
+                hc.onDead += delegate { RemoveMarker(hc.transform); };
+			}
 		}
 	}
 
@@ -61,24 +56,40 @@ public class EnemyMarkerManager : MonoBehaviour
 	{
         if (minimapMarkers.ContainsKey(enemy))
         {
-            Debug.Log($"Removing {enemy.name} from minimap");
             Destroy(minimapMarkers[enemy].gameObject);
             minimapMarkers.Remove(enemy);
         }
-        else
-		{
-            Debug.Log($"Failed to remove {enemy.name} from minimap");
-		}
+    }
+
+    void UpdateScale()
+	{
+        mapScale = Minimap.instance.GetMapScale();
+        UpdateMarkers();
     }
 
     public void UpdateMarkers()
 	{
-        foreach(Transform enemy in minimapMarkers.Keys)
+        for(int i = 0; i < minimapMarkers.Count; i++)
 		{
-            Vector2 markerPos = minimapMarkers[enemy].anchoredPosition;
-            markerPos.x = -enemy.localPosition.x * xScale;
-            markerPos.y = -enemy.localPosition.z * yScale;
-            minimapMarkers[enemy].anchoredPosition = markerPos;
+            var item = minimapMarkers.ElementAt(i);
+
+            Transform enemy = item.Key;
+            RectTransform marker = item.Value;
+
+			if (item.Key != null)
+			{
+				Vector2 markerPos = marker.anchoredPosition;
+                markerPos.x = -enemy.localPosition.x * mapScale.x;
+				markerPos.y = -enemy.localPosition.z * mapScale.y;
+                marker.anchoredPosition = markerPos;
+			}
+			else
+			{
+				Debug.LogWarning($"Invalid minimap transform, deleting marker");
+				Destroy(marker.gameObject);
+				minimapMarkers.Remove(enemy);
+				i--;
+			}
 		}
 	}
 

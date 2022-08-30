@@ -50,7 +50,6 @@ public class Grenade : MonoBehaviour
 
 		foreach (Collider hit in hits)
 		{
-			Debug.Log(hit.GetType());
 			if (hit.GetType() != typeof(CharacterController) && hit.gameObject.TryGetComponent(out HealthComponent hc))
 			{
 				if(Physics.Linecast(transform.position, hit.transform.position, out RaycastHit info))

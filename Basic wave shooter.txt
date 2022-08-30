@@ -16,6 +16,8 @@ Basic wave shooter
     Sounds - WIP
     Interactable Doors - Basic Done
     Switch some raycasts to linecasts
+    Create and implement IDamageable for HC, swap all damage sources to using that instead of HealthComponent
+    Move enemy damage sensing to OnDamage instead of checking for projectile
 
 Bugs
     Change enemy collider size back to normal

@@ -226,6 +226,21 @@ public class PlayerController : MonoBehaviour
 			{
 				ThrowGrenade();
 			}
+
+			if (Input.GetKeyDown(KeyCode.Minus))
+			{
+				Minimap.instance.Zoom(false);
+			}
+
+			if (Input.GetKeyDown(KeyCode.Equals))
+			{
+				Minimap.instance.Zoom(true);
+			}
+
+			if (Input.GetKeyDown(KeyCode.Alpha0))
+			{
+				Minimap.instance.ResetZoom();
+			}
 		}
 	}
 

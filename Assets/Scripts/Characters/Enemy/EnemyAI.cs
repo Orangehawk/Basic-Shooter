@@ -135,7 +135,7 @@ public class EnemyAI : AIPathfinder, IDisplayable
 	{
 		if (currentState != state)
 		{
-			Debug.Log($"{gameObject.name} entered state \"{state}\"");
+			//Debug.Log($"{gameObject.name} entered state \"{state}\"");
 			currentState = state;
 			stateInitialised = false;
 			lastStateChange = Time.time;
@@ -491,10 +491,10 @@ public class EnemyAI : AIPathfinder, IDisplayable
 
 	public void RecieveMessage(Transform target)
 	{
-		Debug.Log($"{name} Recieved message");
+		//Debug.Log($"{name} Recieved message");
 		if (GetTarget() == null)
 		{
-			Debug.Log($"Target null");
+			//Debug.Log($"Target null");
 			lastTargetLocation = target.position;
 			aiPath.enableRotation = true;
 			aiPath.slowdownDistance = defaultSlowdownDistance;
@@ -502,18 +502,18 @@ public class EnemyAI : AIPathfinder, IDisplayable
 
 			if (WeaponReady())
 			{
-				Debug.Log($"{name} Searching");
+				//Debug.Log($"{name} Searching");
 				SetState(State.Searching);
 			}
 			else
 			{
-				Debug.Log($"{name} Escaping");
+				//Debug.Log($"{name} Escaping");
 				SetState(State.Escaping);
 			}
 		}
 		else
 		{
-			Debug.Log($"{name} Target not null");
+			//Debug.Log($"{name} Target not null");
 		}
 	}
 
@@ -525,7 +525,7 @@ public class EnemyAI : AIPathfinder, IDisplayable
 		{
 			if (hit.GetType() != typeof(CharacterController) && hit.gameObject.TryGetComponent(out EnemyAI enemy) && enemy != this)
 			{
-				Debug.Log($"{name} Sent message");
+				//Debug.Log($"{name} Sent message");
 				enemy.RecieveMessage(target);
 			}
 		}
@@ -639,6 +639,6 @@ public class EnemyAI : AIPathfinder, IDisplayable
 
 	public string OnHover()
 	{
-		return $"Health: {healthComponent.GetHealthPercent()}";
+		return $"Health: {Mathf.Round(healthComponent.GetHealthPercent())}";
 	}
 }
