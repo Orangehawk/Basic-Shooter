@@ -44,18 +44,17 @@ public class Bullet : MonoBehaviour
 	{
 		if (!collision.collider.CompareTag("Projectile"))
 		{
-			//Debug.Log($"Hit {collision.gameObject.name}");
-
 			if (collision.gameObject.TryGetComponent(out IDamageable damageable))
 			{
 				damageable.Damage(damage);
 			}
 
-			if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
-			{
-				GameObject o = Instantiate(particlesPrefab, collision.GetContact(0).point, Quaternion.identity);//.transform.localScale = transform.localScale;
-				o.transform.forward = collision.GetContact(0).normal;
-			}
+			BulletHitManager.BulletHit hit = BulletHitManager.instance.GetBulletHit(collision.GetContact(0).otherCollider.sharedMaterial);
+			GameObject o = Instantiate(hit.particle, collision.GetContact(0).point, Quaternion.identity);
+			o.transform.rotation = Quaternion.FromToRotation(Vector3.forward, collision.GetContact(0).normal);
+
+			AudioSource.PlayClipAtPoint(hit.sound, collision.GetContact(0).point);
+
 			Destroy(gameObject);
 		}
 	}

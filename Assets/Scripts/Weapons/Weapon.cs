@@ -9,6 +9,8 @@ public abstract class Weapon : MonoBehaviour
 	[SerializeField]
 	Transform bulletSpawnPoint;
 	[SerializeField]
+	ParticleSystem muzzleFlash;
+	[SerializeField]
 	AudioSource audioSource;
 	[SerializeField]
 	AnimationCurve firePitchRange = AnimationCurve.Linear(0, 0.9f, 1, 1);
@@ -138,10 +140,12 @@ public abstract class Weapon : MonoBehaviour
 			currentAmmo--;
 			lastShot = Time.time;
 
+			muzzleFlash.Play();
+
 			audioSource.pitch = firePitchRange.Evaluate(Random.Range(0, 1f));
 			audioSource.PlayOneShot(fireAudio);
 
-			if(player)
+			if (player)
 			{
 				if(isAiming)
 				{

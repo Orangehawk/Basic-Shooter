@@ -53,5 +53,5 @@ Bonus
     Basic Recoil - Done
     Smooth Recoil
     Recoil Auto-Recentre
-    Enemies on Minimap
-    Minimap zoom
+    Enemies on Minimap - Done
+    Minimap zoom - Done
