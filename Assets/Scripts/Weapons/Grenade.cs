@@ -29,8 +29,6 @@ public class Grenade : MonoBehaviour
 		rb = GetComponent<Rigidbody>();
 
 		expireTime = Time.time + timeToExplode;
-
-		rb.AddRelativeForce(new Vector3(0, 0, initialVelocity), ForceMode.Impulse);
 	}
 
 	// Update is called once per frame

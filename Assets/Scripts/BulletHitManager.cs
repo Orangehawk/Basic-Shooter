@@ -12,6 +12,10 @@ public class BulletHitManager : MonoBehaviour
     List<BulletHit> bulletHits = new List<BulletHit>();
     [SerializeField]
     Dictionary<PhysicMaterial, BulletHit> bullethitDictionary = new Dictionary<PhysicMaterial, BulletHit>();
+    [SerializeField]
+    AudioSource audioSource;
+
+    TemporaryAudioManager temporaryAudioManager;
 
 	void Awake()
 	{
@@ -34,7 +38,18 @@ public class BulletHitManager : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-        
+        temporaryAudioManager = TemporaryAudioManager.instance;
+    }
+
+    public void CreateBulletHit(PhysicMaterial material, Vector3 position, Quaternion rotation, bool playSound = true)
+	{
+        BulletHit hit = GetBulletHit(material);
+        Instantiate(hit.particle, position, rotation);
+
+        if (playSound && hit.sound)
+        {
+            temporaryAudioManager.PlayClipAtPoint(hit.sound, position);
+        }
     }
 
     public BulletHit GetBulletHit(PhysicMaterial material)

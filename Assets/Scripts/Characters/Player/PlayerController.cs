@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 	float sprintSpeed = 8;
 	[SerializeField]
 	float jumpHeight = 3;
+	[SerializeField]
+	float grenadeThrowForce = 5f;
 
 	[SerializeField]
 	uint grenades = 3;
@@ -127,7 +129,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 	{
 		if (grenades > 0)
 		{
-			Instantiate(grenade, grenadePos.position, transform.rotation);
+			Rigidbody r = Instantiate(grenade, grenadePos.position, transform.rotation).GetComponent<Rigidbody>();
+			r.AddForce(cam.transform.forward * grenadeThrowForce, ForceMode.VelocityChange);
 			grenades--;
 		}
 	}

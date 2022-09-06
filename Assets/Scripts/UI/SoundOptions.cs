@@ -38,12 +38,12 @@ public class SoundOptions : MonoBehaviour
 
     float VolumeFromSlider(Slider slider)
 	{
-        return slider.value * 100 - 80;
+        return slider.value - 80;
 	}
 
     float VolumeToSliderValue(float volume)
 	{
-        return (volume + 80) / 100;
+        return volume + 80;
 	}
 
     // Update is called once per frame

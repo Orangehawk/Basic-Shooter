@@ -49,11 +49,11 @@ public class Bullet : MonoBehaviour
 				damageable.Damage(damage);
 			}
 
-			BulletHitManager.BulletHit hit = BulletHitManager.instance.GetBulletHit(collision.GetContact(0).otherCollider.sharedMaterial);
-			GameObject o = Instantiate(hit.particle, collision.GetContact(0).point, Quaternion.identity);
-			o.transform.rotation = Quaternion.FromToRotation(Vector3.forward, collision.GetContact(0).normal);
+			BulletHitManager.instance.CreateBulletHit(collision.GetContact(0).otherCollider.sharedMaterial, collision.GetContact(0).point, Quaternion.FromToRotation(Vector3.forward, collision.GetContact(0).normal));
+			//GameObject o = Instantiate(hit.particle, collision.GetContact(0).point, Quaternion.FromToRotation(Vector3.forward, collision.GetContact(0).normal));
+			//o.transform.rotation = Quaternion.FromToRotation(Vector3.forward, collision.GetContact(0).normal);
 
-			AudioSource.PlayClipAtPoint(hit.sound, collision.GetContact(0).point);
+			//AudioSource.PlayClipAtPoint(hit.sound, collision.GetContact(0).point);
 
 			Destroy(gameObject);
 		}

@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8144778387975617477
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8144778387975617479}
+  - component: {fileID: 8144778387975617476}
+  m_Layer: 0
+  m_Name: BulletHitManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8144778387975617479
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8144778387975617477}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8144778387975617476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8144778387975617477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbcc45df2d154f445bff273d858a42cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultBulletHit:
+    material: {fileID: 0}
+    particle: {fileID: 3831295485910394033, guid: f1f38c6e2cec55544b74c77bf9cfe30a, type: 3}
+    sound: {fileID: 8300000, guid: 75adfe9a619833445a701305b983e548, type: 3}
+  bulletHits:
+  - material: {fileID: 13400000, guid: d0332516346aefd4dadd387367c94ce2, type: 2}
+    particle: {fileID: 5097938603458622511, guid: b9bb1804a67310943b1889130f2b745d, type: 3}
+    sound: {fileID: 8300000, guid: 75adfe9a619833445a701305b983e548, type: 3}
+  - material: {fileID: 13400000, guid: d125de950aac78f468bfc2fe6e436df5, type: 2}
+    particle: {fileID: 1784618101715109599, guid: e27acfe27a256d0429bd788847e229b0, type: 3}
+    sound: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
+  - material: {fileID: 13400000, guid: e53d3ee0bf02e304b82138f2e4bf9836, type: 2}
+    particle: {fileID: 3831295485910394033, guid: 0982c1dcf9952f845a2b0f35e53ea668, type: 3}
+    sound: {fileID: 8300000, guid: 75adfe9a619833445a701305b983e548, type: 3}
+  au: {fileID: 0}
